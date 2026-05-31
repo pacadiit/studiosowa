@@ -52,23 +52,20 @@ button { cursor: none; }
   position: fixed;
   width: 10px;
   height: 10px;
-  background: var(--black);
+  background: var(--white);
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
   transition: width 0.3s var(--ease-out),
-              height 0.3s var(--ease-out),
-              background 0.3s;
+              height 0.3s var(--ease-out);
   will-change: transform;
 }
 
 #cursor.hovering {
   width: 40px;
   height: 40px;
-  background: transparent;
-  border: 1.5px solid var(--black);
-  mix-blend-mode: difference;
 }
 
 /* ---------------------------------------------------------
@@ -206,6 +203,8 @@ nav#nav {
 main#home {
   min-height: 100vh;
   padding-top: 0;
+  /* Le premier projet commence sous le nav (60px fixe transparent) */
+  margin-top: 0;
 }
 
 .projects-grid {
@@ -222,12 +221,8 @@ main#home {
   background: var(--gray-light);
 }
 
-/* Alternating sizes: large = 8 cols, medium = 4 cols */
 .project-card.large  { grid-column: span 8; }
 .project-card.medium { grid-column: span 4; }
-
-/* Auto-placement handles the rest — large (8 cols) + medium (4 cols) = 12 = 1 row.
-   Two mediums (4+4 = 8) sit side by side and a large fills the next row. */
 
 /* Image */
 .project-card__image {
@@ -241,6 +236,13 @@ main#home {
 
 .project-card.large .project-card__image {
   aspect-ratio: 16 / 9;
+}
+
+/* La carte medium prend toute la hauteur de la rangée */
+.project-card.medium .project-card__image,
+.project-card.medium .project-card__placeholder {
+  aspect-ratio: unset;
+  height: 100%;
 }
 
 /* Hover overlay */
@@ -1134,7 +1136,6 @@ body[data-lang="en"] span.lang-en { display: inline; }
   .project-card.medium {
     grid-column: span 1;
   }
-  .project-card.large:nth-child(odd) { grid-column: span 1; }
 
   .project-page {
     grid-template-columns: 1fr;
@@ -1175,7 +1176,9 @@ body[data-lang="en"] span.lang-en { display: inline; }
     gap: 2px;
   }
   .project-card.large,
-  .project-card.medium { grid-column: span 1; }
+  .project-card.medium {
+    grid-column: span 1;
+  }
 
   .studio-content,
   .studio-stats,
