@@ -69,6 +69,13 @@ MAIL_RECIPIENT = os.environ.get('MAIL_RECIPIENT', MAIL_USERNAME)
 
 db = SQLAlchemy(app)
 
+# Redirection www → non-www
+@app.before_request
+def redirect_www():
+    host = request.host
+    if host and host.startswith('www.'):
+        return redirect('https://studiosowa.com' + request.full_path.rstrip('?'), 301)
+
 # ---------------------------------------------------------------------------
 # Models
 # ---------------------------------------------------------------------------
