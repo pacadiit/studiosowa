@@ -11,38 +11,65 @@
     </h1>
   </header>
 
-  <div class="studio-content">
+  <!-- ── Fondateur ────────────────────────────────────────── -->
+  <section class="studio-founder">
+    <div class="studio-founder__photo-wrap">
+      <img class="studio-founder__photo"
+           src="{{ url_for('static', filename='img/youssou-sow.jpg') }}"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+           alt="Youssou SOW">
+      <div class="studio-founder__photo-placeholder" style="display:none">YS</div>
+    </div>
 
-    <p class="studio-lead">
-      <span class="lang-fr">
-        StudioSowa est une agence d'architecture basée à Dakar, fondée sur la conviction que l'architecture doit être ancrée dans son contexte géographique, climatique et culturel.
-      </span>
-      <span class="lang-en">
-        StudioSowa is an architecture studio based in Dakar, founded on the conviction that architecture must be rooted in its geographic, climatic and cultural context.
-      </span>
-    </p>
-
-    <div class="studio-text">
-      <p class="lang-fr">
-        Notre approche est rigoureuse et sensible. Chaque projet part d'une écoute approfondie — des usagers, du lieu, du programme. Nous concevons des bâtiments qui s'inscrivent dans la durée, en privilégiant les matériaux locaux, les savoir-faire artisanaux et les stratégies bioclimatiques.
+    <div class="studio-founder__bio">
+      <p class="studio-founder__role">
+        <span class="lang-fr">Fondateur &amp; Architecte Principal</span>
+        <span class="lang-en">Founder &amp; Principal Architect</span>
       </p>
-      <p class="lang-en">
-        Our approach is rigorous and sensitive. Every project begins with deep listening — to users, to place, to programme. We design buildings that stand the test of time, prioritising local materials, artisanal know-how and bioclimatic strategies.
+      <h2 class="studio-founder__name">Youssou SOW</h2>
+      <p class="studio-founder__text lang-fr">
+        Notre vision de l'architecture s'articule autour de la simplicité, de la lumière et de l'intégration au contexte. Chaque projet est une réponse unique aux besoins de nos clients, alliant esthétique intemporelle et fonctionnalité.
+      </p>
+      <p class="studio-founder__text lang-en">
+        Our vision of architecture revolves around simplicity, light and contextual integration. Each project is a unique response to our clients' needs, combining timeless aesthetics with functionality.
+      </p>
+    </div>
+  </section>
+
+  <div class="studio-divider"></div>
+
+  <!-- ── Philosophie & Approche ───────────────────────────── -->
+  <section class="studio-two-col">
+
+    <div class="studio-two-col__block">
+      <h3 class="studio-two-col__title lang-fr">Philosophie</h3>
+      <h3 class="studio-two-col__title lang-en">Philosophy</h3>
+      <div class="studio-two-col__rule"></div>
+      <p class="studio-two-col__text lang-fr">
+        Nous croyons en une architecture qui respecte son environnement et traverse le temps. Notre démarche privilégie les matériaux nobles, les lignes épurées et une attention particulière aux détails constructifs. L'espace n'est pas seulement conçu pour être regardé, mais pour être vécu pleinement au quotidien.
+      </p>
+      <p class="studio-two-col__text lang-en">
+        We believe in architecture that respects its environment and stands the test of time. Our approach favours noble materials, clean lines and careful attention to constructive detail. Space is not only designed to be admired, but to be fully lived in every day.
       </p>
     </div>
 
-    <div class="studio-text">
-      <p class="lang-fr">
-        De la villa au grand équipement public, du logement social à la réhabilitation du patrimoine, notre ambition reste constante : produire une architecture de qualité, sobre dans ses moyens, généreuse dans ses usages.
+    <div class="studio-two-col__block">
+      <h3 class="studio-two-col__title lang-fr">Approche</h3>
+      <h3 class="studio-two-col__title lang-en">Approach</h3>
+      <div class="studio-two-col__rule"></div>
+      <p class="studio-two-col__text lang-fr">
+        De la première esquisse à la livraison, nous accompagnons nos clients avec rigueur et transparence. Notre méthode de travail repose sur un dialogue constant, permettant de transformer une vision en réalité bâtie. Nous collaborons étroitement avec des artisans qualifiés pour garantir une exécution fidèle à nos exigences.
       </p>
-      <p class="lang-en">
-        From the private villa to major public facilities, from social housing to heritage rehabilitation, our ambition remains constant: to produce quality architecture, measured in its means, generous in its uses.
+      <p class="studio-two-col__text lang-en">
+        From the first sketch to handover, we guide our clients with rigour and transparency. Our working method is built on constant dialogue, transforming a vision into built reality. We collaborate closely with skilled craftspeople to ensure execution faithful to our standards.
       </p>
     </div>
 
-  </div>
+  </section>
 
-  <!-- Stats -->
+  <div class="studio-divider"></div>
+
+  <!-- ── Stats ────────────────────────────────────────────── -->
   <div class="studio-stats">
     <div class="studio-stat">
       <div class="studio-stat__number">12+</div>
@@ -66,6 +93,52 @@
       </div>
     </div>
   </div>
+
+  <div class="studio-divider"></div>
+
+  <!-- ── Nos Fondations ───────────────────────────────────── -->
+  <section class="studio-values">
+    <p class="studio-values__label">
+      <span class="lang-fr">NOS FONDATIONS</span>
+      <span class="lang-en">OUR FOUNDATIONS</span>
+    </p>
+    <div class="studio-values__grid">
+
+      <div class="studio-values__item">
+        <h4 class="studio-values__name lang-fr"><em>Rigueur</em></h4>
+        <h4 class="studio-values__name lang-en"><em>Rigour</em></h4>
+        <p class="studio-values__text lang-fr">
+          Une exigence technique et esthétique à chaque étape du projet, garantissant une exécution irréprochable et une maîtrise parfaite des contraintes.
+        </p>
+        <p class="studio-values__text lang-en">
+          Technical and aesthetic demands at every stage of the project, ensuring flawless execution and perfect command of constraints.
+        </p>
+      </div>
+
+      <div class="studio-values__item">
+        <h4 class="studio-values__name lang-fr"><em>Écoute</em></h4>
+        <h4 class="studio-values__name lang-en"><em>Listening</em></h4>
+        <p class="studio-values__text lang-fr">
+          Une compréhension profonde de vos modes de vie et de vos aspirations pour concevoir des espaces singuliers qui vous ressemblent véritablement.
+        </p>
+        <p class="studio-values__text lang-en">
+          A deep understanding of your lifestyle and aspirations, to design singular spaces that truly reflect who you are.
+        </p>
+      </div>
+
+      <div class="studio-values__item">
+        <h4 class="studio-values__name lang-fr"><em>Durabilité</em></h4>
+        <h4 class="studio-values__name lang-en"><em>Durability</em></h4>
+        <p class="studio-values__text lang-fr">
+          Une conception responsable, privilégiant des solutions pérennes, des matériaux locaux et une intégration respectueuse de l'environnement.
+        </p>
+        <p class="studio-values__text lang-en">
+          Responsible design, favouring lasting solutions, local materials and respectful environmental integration.
+        </p>
+      </div>
+
+    </div>
+  </section>
 
 </main>
 {% endblock %}

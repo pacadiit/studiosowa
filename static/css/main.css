@@ -575,6 +575,137 @@ main#home {
   color: var(--gray-mid);
 }
 
+/* Studio — Fondateur
+   --------------------------------------------------------- */
+.studio-founder {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 80px;
+  padding: 80px 80px 80px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.studio-founder__photo-wrap {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.studio-founder__photo,
+.studio-founder__photo-placeholder {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.studio-founder__photo-placeholder {
+  background: var(--gray-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 200;
+  letter-spacing: 0.08em;
+  color: var(--gray-mid);
+}
+
+.studio-founder__role {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-mid);
+  margin-bottom: 10px;
+}
+
+.studio-founder__name {
+  font-size: clamp(28px, 3.5vw, 48px);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  margin-bottom: 20px;
+  line-height: 1.1;
+}
+
+.studio-founder__text {
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--gray-dark);
+}
+
+/* Studio — Divider */
+.studio-divider {
+  border: none;
+  border-top: 1px solid var(--gray-light);
+  margin: 0 80px;
+}
+
+/* Studio — Philosophie & Approche */
+.studio-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  padding: 80px;
+}
+
+.studio-two-col__title {
+  font-size: clamp(18px, 2vw, 26px);
+  font-weight: 400;
+  margin-bottom: 16px;
+}
+
+.studio-two-col__rule {
+  width: 40px;
+  height: 1px;
+  background: var(--black);
+  margin-bottom: 24px;
+}
+
+.studio-two-col__text {
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.85;
+  color: var(--gray-dark);
+}
+
+/* Studio — Valeurs */
+.studio-values {
+  padding: 80px;
+  text-align: center;
+}
+
+.studio-values__label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray-mid);
+  margin-bottom: 60px;
+}
+
+.studio-values__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 60px;
+}
+
+.studio-values__name {
+  font-size: clamp(18px, 2vw, 24px);
+  font-weight: 400;
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+.studio-values__text {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.85;
+  color: var(--gray-dark);
+  max-width: 260px;
+  margin: 0 auto;
+}
+
 /* ---------------------------------------------------------
    8. Contact Page
    --------------------------------------------------------- */
@@ -1157,6 +1288,26 @@ body[data-lang="en"] span.lang-en { display: inline; }
     padding: 0 48px 48px;
   }
   .studio-hero { padding: 40px 48px; }
+  .studio-founder {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: 60px 48px;
+    gap: 40px;
+  }
+  .studio-founder__photo-wrap { justify-content: center; }
+  .studio-two-col {
+    grid-template-columns: 1fr;
+    padding: 60px 48px;
+    gap: 48px;
+  }
+  .studio-values {
+    padding: 60px 48px;
+  }
+  .studio-values__grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .studio-divider { margin: 0 48px; }
 
   .contact-page { grid-template-columns: 1fr; }
   .contact-info { border-right: none; border-bottom: 1px solid var(--gray-light); padding: 48px; }
