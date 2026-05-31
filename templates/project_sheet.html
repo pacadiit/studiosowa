@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ project.title_fr }} — StudioSowa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,200;0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <style>
+    /* ---- Reset ---- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --gray:  #5a5a5a;
+      --line:  #d8d8d4;
+    }
+
+    body {
+      font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 10pt;
+      color: var(--black);
+      background: var(--white);
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* ---- Screen wrapper ---- */
+    .sheet-wrap {
+      max-width: 794px;   /* A4 width at 96dpi */
+      margin: 0 auto;
+      padding: 40px;
+    }
+
+    /* ---- Top bar ---- */
+    .sheet-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1.5px solid var(--black);
+      margin-bottom: 32px;
+    }
+
+    .sheet-logo {
+      font-size: 13pt;
+      font-weight: 200;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .sheet-tagline {
+      font-size: 8pt;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+
+    /* ---- Title block ---- */
+    .sheet-title {
+      font-size: 22pt;
+      font-weight: 200;
+      letter-spacing: 0.03em;
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+
+    .sheet-location {
+      font-size: 9pt;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 28px;
+    }
+
+    /* ---- Hero image ---- */
+    .sheet-hero {
+      width: 100%;
+      max-height: 360px;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 28px;
+    }
+
+    /* ---- Meta grid ---- */
+    .sheet-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--line);
+      margin-bottom: 28px;
+    }
+
+    .meta-cell {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+      padding-right: 16px;
+    }
+
+    .meta-cell:nth-child(3n) { padding-right: 0; }
+
+    .meta-cell__label {
+      font-size: 7pt;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 4px;
+    }
+
+    .meta-cell__value {
+      font-size: 9.5pt;
+      font-weight: 300;
+      line-height: 1.4;
+    }
+
+    /* ---- Description ---- */
+    .sheet-description {
+      font-size: 10pt;
+      font-weight: 300;
+      line-height: 1.75;
+      color: #333;
+      margin-bottom: 32px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* ---- Image gallery ---- */
+    .sheet-gallery {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 32px;
+    }
+
+    .sheet-gallery img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .sheet-gallery img:first-child:nth-last-child(odd) {
+      grid-column: 1 / -1;
+      height: 300px;
+    }
+
+    /* ---- Footer ---- */
+    .sheet-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      font-size: 8pt;
+      color: var(--gray);
+      letter-spacing: 0.08em;
+    }
+
+    /* ---- Print controls (screen only) ---- */
+    .print-controls {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+
+    .btn-print {
+      background: #0a0a0a;
+      color: #fff;
+      border: none;
+      padding: 14px 28px;
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-print:hover { opacity: 0.75; }
+
+    .btn-back {
+      background: #e8e7e5;
+      color: #0a0a0a;
+      border: none;
+      padding: 14px 20px;
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    /* ---- Print media ---- */
+    @media print {
+      .print-controls { display: none !important; }
+
+      body { font-size: 9pt; }
+
+      .sheet-wrap {
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+      }
+
+      .sheet-hero { max-height: 280px; }
+
+      .sheet-gallery img { height: 180px; }
+      .sheet-gallery img:first-child:nth-last-child(odd) { height: 240px; }
+
+      @page {
+        size: A4;
+        margin: 18mm 16mm;
+      }
+
+      /* Avoid breaking inside meta cells and gallery images */
+      .meta-cell, .sheet-gallery img { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Print / Back controls (hidden when printing) -->
+<div class="print-controls">
+  <a href="{{ url_for('project_detail', slug=project.slug) }}" class="btn-back">← Retour</a>
+  <button class="btn-print" onclick="window.print()">
+    ↓ Télécharger PDF
+  </button>
+</div>
+
+<div class="sheet-wrap">
+
+  <!-- Header -->
+  <header class="sheet-header">
+    <div class="sheet-logo">StudioSowa</div>
+    <div class="sheet-tagline">
+      <span data-fr>Fiche projet</span>
+      <span data-en style="display:none">Project sheet</span>
+    </div>
+  </header>
+
+  <!-- Title -->
+  <h1 class="sheet-title">
+    <span data-fr>{{ project.title_fr }}</span>
+    <span data-en style="display:none">{{ project.title_en }}</span>
+  </h1>
+  <p class="sheet-location">
+    {{ project.location }}{% if project.year %} &mdash; {{ project.year }}{% endif %}
+  </p>
+
+  <!-- Hero image -->
+  {% if project.featured_image %}
+  <img class="sheet-hero"
+       src="{{ image_url(project.featured_image) }}"
+       alt="{{ project.title_fr }}">
+  {% endif %}
+
+  <!-- Metadata grid -->
+  <div class="sheet-meta">
+    {% if project.architect %}
+    <div class="meta-cell">
+      <div class="meta-cell__label" data-fr>Architecte</div>
+      <div class="meta-cell__label" data-en style="display:none">Architect</div>
+      <div class="meta-cell__value">{{ project.architect }}</div>
+    </div>
+    {% endif %}
+
+    {% if project.client %}
+    <div class="meta-cell">
+      <div class="meta-cell__label" data-fr>Maître d'ouvrage</div>
+      <div class="meta-cell__label" data-en style="display:none">Client</div>
+      <div class="meta-cell__value">{{ project.client }}</div>
+    </div>
+    {% endif %}
+
+    {% if project.phase %}
+    <div class="meta-cell">
+      <div class="meta-cell__label" data-fr>Phase</div>
+      <div class="meta-cell__label" data-en style="display:none">Phase</div>
+      <div class="meta-cell__value">{{ project.phase }}</div>
+    </div>
+    {% endif %}
+
+    {% if project.category %}
+    <div class="meta-cell">
+      <div class="meta-cell__label" data-fr>Programme</div>
+      <div class="meta-cell__label" data-en style="display:none">Programme</div>
+      <div class="meta-cell__value">{{ project.category }}</div>
+    </div>
+    {% endif %}
+
+    {% if project.surface %}
+    <div class="meta-cell">
+      <div class="meta-cell__label" data-fr>Surface</div>
+      <div class="meta-cell__label" data-en style="display:none">Area</div>
+      <div class="meta-cell__value">{{ project.surface }}</div>
+    </div>
+    {% endif %}
+
+    {% if project.year %}
+    <div class="meta-cell">
+      <div class="meta-cell__label" data-fr>Année</div>
+      <div class="meta-cell__label" data-en style="display:none">Year</div>
+      <div class="meta-cell__value">{{ project.year }}</div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Description -->
+  {% if project.description_fr or project.description_en %}
+  <div class="sheet-description">
+    <p data-fr>{{ project.description_fr }}</p>
+    <p data-en style="display:none">{{ project.description_en }}</p>
+  </div>
+  {% endif %}
+
+  <!-- Gallery (skip featured image — already shown as hero) -->
+  {% set extra_images = project.images | selectattr('filename', '!=', project.featured_image) | list %}
+  {% if extra_images %}
+  <div class="sheet-gallery">
+    {% for img in extra_images %}
+    <img src="{{ image_url(img.filename) }}"
+         alt="{{ project.title_fr }}"
+         loading="eager">
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Footer -->
+  <footer class="sheet-footer">
+    <span>StudioSowa — Agence d'Architecture, Dakar</span>
+    <span>studiosowa.com</span>
+  </footer>
+
+</div>
+
+<script>
+  // Apply language from cookie
+  const lang = document.cookie.match(/lang=([^;]+)/)?.[1] || 'fr';
+  if (lang === 'en') {
+    document.querySelectorAll('[data-fr]').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('[data-en]').forEach(el => el.style.display = '');
+  }
+</script>
+
+</body>
+</html>

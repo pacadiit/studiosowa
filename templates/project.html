@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title_fr if lang == 'fr' else project.title_en }}{% endblock %}
+
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ project.title_fr if lang == 'fr' else project.title_en }} — StudioSowa{% endblock %}
+{% block og_description %}{% if lang == 'fr' %}{{ project.description_fr | truncate(160, True, '…') if project.description_fr else project.location + ' — ' + project.year }}{% else %}{{ project.description_en | truncate(160, True, '…') if project.description_en else project.location + ' — ' + project.year }}{% endif %}{% endblock %}
+{% block og_image %}{% if project.featured_image %}{{ image_url(project.featured_image) if project.featured_image else request.host_url ~ 'static/img/og-default.jpg' }}{% else %}{{ request.host_url }}static/img/og-default.jpg{% endif %}{% endblock %}
+{% block tw_title %}{{ project.title_fr if lang == 'fr' else project.title_en }} — StudioSowa{% endblock %}
+{% block tw_description %}{% if lang == 'fr' %}{{ project.description_fr | truncate(160, True, '…') if project.description_fr else project.location }}{% else %}{{ project.description_en | truncate(160, True, '…') if project.description_en else project.location }}{% endif %}{% endblock %}
+{% block tw_image %}{% if project.featured_image %}{{ image_url(project.featured_image) if project.featured_image else request.host_url ~ 'static/img/og-default.jpg' }}{% else %}{{ request.host_url }}static/img/og-default.jpg{% endif %}{% endblock %}
+
+{% block meta_description %}{{ project.description_fr | truncate(160, True, '…') if lang == 'fr' and project.description_fr else project.description_en | truncate(160, True, '…') if project.description_en else project.title_fr + ' — ' + project.location }}{% endblock %}
+
+{% block content %}
+<div class="project-page" role="main">
+
+  <!-- Sidebar / Info Panel -->
+  <aside class="project-sidebar">
+
+    <a href="{{ url_for('index') }}" class="project-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      <span class="lang-fr inline">Tous les projets</span>
+      <span class="lang-en inline">All projects</span>
+    </a>
+
+    <h1 class="project-title">
+      <span class="lang-fr inline">{{ project.title_fr }}</span>
+      <span class="lang-en inline">{{ project.title_en }}</span>
+    </h1>
+
+    <p class="project-subtitle">
+      {{ project.location }}{% if project.year %} &mdash; {{ project.year }}{% endif %}
+    </p>
+
+    <!-- Toggle details -->
+    <button class="project-details-toggle" id="detailsToggle" aria-expanded="false" aria-controls="projectMeta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" id="toggleIcon">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
+      <span id="toggleLabel">
+        <span class="lang-fr inline">Afficher les détails</span>
+        <span class="lang-en inline">Show details</span>
+      </span>
+    </button>
+
+    <div class="project-meta" id="projectMeta" role="region">
+
+      {% if project.architect %}
+      <div class="meta-item">
+        <span class="meta-label">
+          <span class="lang-fr inline">Architecte</span>
+          <span class="lang-en inline">Architect</span>
+        </span>
+        <span class="meta-value">{{ project.architect }}</span>
+      </div>
+      {% endif %}
+
+      {% if project.client %}
+      <div class="meta-item">
+        <span class="meta-label">
+          <span class="lang-fr inline">Maître d'ouvrage</span>
+          <span class="lang-en inline">Client</span>
+        </span>
+        <span class="meta-value">{{ project.client }}</span>
+      </div>
+      {% endif %}
+
+      {% if project.phase %}
+      <div class="meta-item">
+        <span class="meta-label">
+          <span class="lang-fr inline">Phase</span>
+          <span class="lang-en inline">Phase</span>
+        </span>
+        <span class="meta-value">{{ project.phase }}</span>
+      </div>
+      {% endif %}
+
+      {% if project.category %}
+      <div class="meta-item">
+        <span class="meta-label">
+          <span class="lang-fr inline">Programme</span>
+          <span class="lang-en inline">Programme</span>
+        </span>
+        <span class="meta-value">{{ project.category }}</span>
+      </div>
+      {% endif %}
+
+      {% if project.surface %}
+      <div class="meta-item">
+        <span class="meta-label">
+          <span class="lang-fr inline">Surface</span>
+          <span class="lang-en inline">Area</span>
+        </span>
+        <span class="meta-value">{{ project.surface }}</span>
+      </div>
+      {% endif %}
+
+      {% if project.location %}
+      <div class="meta-item">
+        <span class="meta-label">
+          <span class="lang-fr inline">Localisation</span>
+          <span class="lang-en inline">Location</span>
+        </span>
+        <span class="meta-value">{{ project.location }}</span>
+      </div>
+      {% endif %}
+
+      {% if project.year %}
+      <div class="meta-item">
+        <span class="meta-label">
+          <span class="lang-fr inline">Année</span>
+          <span class="lang-en inline">Year</span>
+        </span>
+        <span class="meta-value">{{ project.year }}</span>
+      </div>
+      {% endif %}
+
+    </div>
+
+    {% if project.description_fr or project.description_en %}
+    <div class="project-description">
+      <p class="lang-fr">{{ project.description_fr }}</p>
+      <p class="lang-en">{{ project.description_en }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Download PDF sheet -->
+    <a href="{{ url_for('project_sheet', slug=project.slug) }}"
+       target="_blank"
+       style="display:inline-flex; align-items:center; gap:8px; margin-top:32px;
+              font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
+              border: 1px solid var(--gray-light); padding: 12px 20px;
+              color: var(--gray-dark); transition: all 0.3s;"
+       onmouseover="this.style.borderColor='var(--black)';this.style.color='var(--black)'"
+       onmouseout="this.style.borderColor='var(--gray-light)';this.style.color='var(--gray-dark)'">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      <span class="lang-fr inline">Télécharger la fiche</span>
+      <span class="lang-en inline">Download sheet</span>
+    </a>
+
+    <!-- Prev / Next navigation -->
+    <nav class="project-nav-links" aria-label="Navigation projets">
+      {% if prev_project %}
+      <a href="{{ url_for('project_detail', slug=prev_project.slug) }}" class="project-nav-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        <span class="lang-fr inline">Précédent —</span>
+        <span class="lang-en inline">Previous —</span>
+        &nbsp;
+        <span>{{ prev_project.title_fr if lang == 'fr' else prev_project.title_en }}</span>
+      </a>
+      {% endif %}
+      {% if next_project %}
+      <a href="{{ url_for('project_detail', slug=next_project.slug) }}" class="project-nav-link">
+        <span class="lang-fr inline">Suivant —</span>
+        <span class="lang-en inline">Next —</span>
+        &nbsp;
+        <span>{{ next_project.title_fr if lang == 'fr' else next_project.title_en }}</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+      {% endif %}
+    </nav>
+
+  </aside>
+
+  <!-- Images Column -->
+  <section class="project-images" aria-label="Images du projet">
+
+    {% for image in project.images %}
+    <div class="project-image-item">
+      <img
+        src="{{ image_url(image.filename) }}"
+        alt="{% if lang == 'fr' %}{{ image.caption_fr or project.title_fr }}{% else %}{{ image.caption_en or project.title_en }}{% endif %}"
+        loading="{% if loop.index == 1 %}eager{% else %}lazy{% endif %}"
+      >
+    </div>
+    {% if not loop.last %}
+    <div class="project-image-gap" aria-hidden="true"></div>
+    {% endif %}
+    {% endfor %}
+
+    {% if not project.images %}
+    <div style="height: 60vh; display: flex; align-items: center; justify-content: center;">
+      <p style="font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #a0a09a;">
+        <span class="lang-fr inline">Images à venir</span>
+        <span class="lang-en inline">Images coming soon</span>
+      </p>
+    </div>
+    {% endif %}
+
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // Details toggle
+  const toggle = document.getElementById('detailsToggle');
+  const meta   = document.getElementById('projectMeta');
+  const icon   = document.getElementById('toggleIcon');
+  const label  = document.getElementById('toggleLabel');
+  const lang   = document.documentElement.getAttribute('data-lang');
+
+  toggle.addEventListener('click', () => {
+    const open = meta.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open);
+    icon.innerHTML = open
+      ? '<path d="M5 12h14"/>'
+      : '<path d="M12 5v14M5 12h14"/>';
+    label.innerHTML = open
+      ? (lang === 'fr'
+          ? '<span class="lang-fr inline">Masquer les détails</span><span class="lang-en inline">Hide details</span>'
+          : '<span class="lang-fr inline">Masquer les détails</span><span class="lang-en inline">Hide details</span>')
+      : '<span class="lang-fr inline">Afficher les détails</span><span class="lang-en inline">Show details</span>';
+    // Re-apply language visibility
+    if (window.applyLang) window.applyLang(lang);
+  });
+</script>
+{% endblock %}

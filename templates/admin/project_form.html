@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ 'Modifier' if project else 'Nouveau projet' }} — Admin StudioSowa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <style>body { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; }</style>
+</head>
+<body class="admin-body">
+
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <strong>StudioSowa</strong>
+      <span>Administration</span>
+    </div>
+    <ul class="admin-nav">
+      <li>
+        <a href="{{ url_for('admin_projects') }}" class="active">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/>
+            <rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/>
+          </svg>
+          Projets
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('index') }}" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+          Voir le site
+        </a>
+      </li>
+    </ul>
+    <div class="admin-nav-bottom">
+      <a href="{{ url_for('admin_logout') }}">← Déconnexion</a>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="admin-main">
+
+    <div class="admin-header">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <a href="{{ url_for('admin_projects') }}" style="font-size: 12px; color: #a0a09a; letter-spacing: 0.1em; text-transform: uppercase;">
+          ← Projets
+        </a>
+        <h1 class="admin-page-title">
+          {{ 'Modifier le projet' if project else 'Nouveau projet' }}
+        </h1>
+      </div>
+      {% if project %}
+      <a href="{{ url_for('project_detail', slug=project.slug) }}" target="_blank"
+         class="btn btn-secondary btn-sm">
+        Voir sur le site ↗
+      </a>
+      {% endif %}
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
+
+    <form
+      method="POST"
+      enctype="multipart/form-data"
+      action="{{ url_for('admin_edit_project', project_id=project.id) if project else url_for('admin_new_project') }}"
+      id="projectForm"
+    >
+
+      <!-- Identité du projet -->
+      <div class="admin-section">
+        <h2 class="admin-section-title">Identité du projet</h2>
+        <div class="admin-form-grid">
+
+          <div class="admin-form-group">
+            <label class="admin-label" for="title_fr">Titre (Français) *</label>
+            <input class="admin-input" type="text" id="title_fr" name="title_fr"
+                   value="{{ project.title_fr if project else '' }}" required>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-label" for="title_en">Titre (English)</label>
+            <input class="admin-input" type="text" id="title_en" name="title_en"
+                   value="{{ project.title_en if project else '' }}">
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-label" for="location">Localisation</label>
+            <input class="admin-input" type="text" id="location" name="location"
+                   value="{{ project.location if project else '' }}"
+                   placeholder="ex : Dakar, Sénégal">
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-label" for="year">Année</label>
+            <input class="admin-input" type="text" id="year" name="year"
+                   value="{{ project.year if project else '' }}"
+                   placeholder="ex : 2024">
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-label" for="architect">Architecte</label>
+            <input class="admin-input" type="text" id="architect" name="architect"
+                   value="{{ project.architect if project else 'StudioSowa' }}">
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-label" for="client">Maître d'ouvrage / Client</label>
+            <input class="admin-input" type="text" id="client" name="client"
+                   value="{{ project.client if project else '' }}">
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-label" for="phase">Phase</label>
+            <select class="admin-select" id="phase" name="phase">
+              {% set phases = ['Esquisse', 'APS', 'APD', 'PRO', 'DCE', 'Permis de construire', 'Chantier', 'Livré'] %}
+              <option value="">—</option>
+              {% for ph in phases %}
+              <option value="{{ ph }}" {{ 'selected' if project and project.phase == ph else '' }}>{{ ph }}</option>
+              {% endfor %}
+              <option value="{{ project.phase if project and project.phase not in phases else '' }}"
+                      {% if project and project.phase not in phases and project.phase %}selected{% endif %}>
+                {{ project.phase if project and project.phase not in phases else 'Autre…' }}
+              </option>
+            </select>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-label" for="category">Programme / Catégorie</label>
+            <input class="admin-input" type="text" id="category" name="category"
+                   value="{{ project.category if project else '' }}"
+                   placeholder="ex : Résidentiel, Culturel, Éducation…">
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-label" for="surface">Surface</label>
+            <input class="admin-input" type="text" id="surface" name="surface"
+                   value="{{ project.surface if project else '' }}"
+                   placeholder="ex : 1 200 m²">
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="admin-section">
+        <h2 class="admin-section-title">Description</h2>
+        <div class="admin-form-grid">
+          <div class="admin-form-group full-width">
+            <label class="admin-label" for="description_fr">Description (Français)</label>
+            <textarea class="admin-textarea" id="description_fr" name="description_fr"
+                      style="min-height: 160px;">{{ project.description_fr if project else '' }}</textarea>
+          </div>
+          <div class="admin-form-group full-width">
+            <label class="admin-label" for="description_en">Description (English)</label>
+            <textarea class="admin-textarea" id="description_en" name="description_en"
+                      style="min-height: 160px;">{{ project.description_en if project else '' }}</textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Affichage -->
+      <div class="admin-section">
+        <h2 class="admin-section-title">Affichage dans la grille</h2>
+        <div class="admin-form-grid">
+
+          <div class="admin-form-group">
+            <label class="admin-label" for="image_size">Taille de la carte</label>
+            <select class="admin-select" id="image_size" name="image_size">
+              <option value="large"  {{ 'selected' if not project or project.image_size == 'large' }}>Grand (8/12 colonnes)</option>
+              <option value="medium" {{ 'selected' if project and project.image_size == 'medium' }}>Moyen (4/12 colonnes)</option>
+            </select>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-label" for="sort_order">Ordre d'affichage</label>
+            <input class="admin-input" type="number" id="sort_order" name="sort_order"
+                   value="{{ project.sort_order if project else 0 }}" min="0">
+            <small style="color: #a0a09a; font-size: 11px; margin-top: 4px;">0 = premier, plus le chiffre est petit, plus le projet apparaît en premier.</small>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-label">Visibilité</label>
+            <label style="display: flex; align-items: center; gap: 10px; margin-top: 10px; cursor: pointer;">
+              <input type="checkbox" name="published"
+                     {{ 'checked' if not project or project.published else '' }}
+                     style="width: 16px; height: 16px;">
+              <span style="font-size: 13px; font-weight: 300;">Publié (visible sur le site)</span>
+            </label>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Images (new project) -->
+      {% if not project %}
+      <div class="admin-section">
+        <h2 class="admin-section-title">Images</h2>
+        <p style="font-size: 12px; color: #a0a09a; margin-bottom: 20px;">
+          La première image sera utilisée comme vignette dans la grille.
+          Vous pourrez ajouter, supprimer et réorganiser les images après création.
+        </p>
+
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('imagesInput').click()">
+          <svg class="upload-zone__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <p class="upload-zone__text">Cliquez ou déposez vos images ici</p>
+          <p class="upload-zone__sub">JPG, PNG, WebP — max 80 Mo par fichier</p>
+        </div>
+        <input type="file" id="imagesInput" name="images" multiple accept="image/*" style="display: none;">
+
+        <div class="images-preview" id="imagesPreview"></div>
+      </div>
+      {% endif %}
+
+      <!-- Actions -->
+      <div style="display: flex; align-items: center; gap: 16px; margin-top: 8px;">
+        <button type="submit" class="btn btn-primary" style="cursor: pointer;">
+          {{ '💾 Enregistrer les modifications' if project else '✓ Créer le projet' }}
+        </button>
+        <a href="{{ url_for('admin_projects') }}" class="btn btn-secondary">Annuler</a>
+      </div>
+
+    </form>
+
+    <!-- Images management (edit mode) -->
+    {% if project %}
+    <div class="admin-section" style="margin-top: 32px;">
+      <h2 class="admin-section-title">
+        Images du projet
+        <span style="font-weight: 300; color: #a0a09a;">({{ project.images | length }} image{{ 's' if project.images | length > 1 }})</span>
+      </h2>
+
+      <p style="font-size: 12px; color: #a0a09a; margin-bottom: 20px;">
+        Faites glisser pour réorganiser. Cliquez ★ pour définir la vignette principale. La première image est toujours la vignette par défaut.
+      </p>
+
+      <!-- Upload zone for existing project -->
+      <div class="upload-zone" id="uploadZoneEdit"
+           style="padding: 24px; margin-bottom: 24px;"
+           onclick="document.getElementById('ajaxImageInput').click()">
+        <p class="upload-zone__text" style="font-size: 12px;">
+          + Ajouter des images (cliquez ou déposez)
+        </p>
+        <p class="upload-zone__sub">JPG, PNG, WebP — max 80 Mo</p>
+      </div>
+      <input type="file" id="ajaxImageInput" accept="image/*" multiple style="display: none;">
+
+      <div class="images-preview" id="existingImages">
+        {% for img in project.images %}
+        <div class="image-preview-item" data-image-id="{{ img.id }}" draggable="true">
+          <img src="{{ image_url(img.filename) }}" alt="">
+          <div class="image-preview-actions">
+            <button class="img-action-btn" title="Définir comme vignette"
+                    onclick="setCover({{ img.id }}, this)">★</button>
+            <button class="img-action-btn delete" title="Supprimer"
+                    onclick="deleteImage({{ img.id }}, this)">×</button>
+          </div>
+          {% if project.featured_image == img.filename %}
+          <div class="image-preview-cover-badge">Vignette</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+
+      <div id="uploadProgress" style="display: none; margin-top: 16px;">
+        <div style="height: 2px; background: #e8e7e5; position: relative;">
+          <div id="progressBar" style="height: 100%; background: #0a0a0a; width: 0%; transition: width 0.3s;"></div>
+        </div>
+        <p style="font-size: 11px; color: #a0a09a; margin-top: 6px;" id="uploadStatus">Upload en cours…</p>
+      </div>
+
+    </div>
+
+    <script>
+      const projectId = {{ project.id }};
+    </script>
+    {% endif %}
+
+  </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</body>
+</html>

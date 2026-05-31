@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — StudioSowa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <style>body { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; cursor: auto; }</style>
+</head>
+<body class="admin-body">
+
+<div class="admin-login-page">
+  <div class="admin-login-box">
+    <p class="admin-login-logo">StudioSowa</p>
+    <p class="admin-login-subtitle">Administration</p>
+
+    {% if error %}
+    <div class="admin-login-error">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('admin_login') }}">
+      <div class="admin-form-group" style="margin-bottom: 24px;">
+        <label class="admin-label" for="password">Mot de passe</label>
+        <input
+          class="admin-input"
+          type="password"
+          id="password"
+          name="password"
+          required
+          autofocus
+          autocomplete="current-password"
+          style="margin-top: 8px;"
+        >
+      </div>
+      <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; cursor: pointer;">
+        Se connecter
+      </button>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>

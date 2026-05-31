@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" data-lang="{{ lang }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{% block meta_description %}<span class='lang-fr'>StudioSowa — Agence d'Architecture. Dakar, Sénégal.</span><span class='lang-en'>StudioSowa — Architecture Studio. Dakar, Senegal.</span>{% endblock %}">
+  <title>{% block title %}StudioSowa{% endblock %} — Architecture</title>
+
+  <!-- SEO & Open Graph -->
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="{{ request.url }}">
+
+  <!-- Open Graph (Facebook, WhatsApp, LinkedIn…) -->
+  <meta property="og:site_name" content="StudioSowa">
+  <meta property="og:type"      content="{% block og_type %}website{% endblock %}">
+  <meta property="og:url"       content="{{ request.url }}">
+  <meta property="og:title"     content="{% block og_title %}StudioSowa — Architecture{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Agence d'architecture basée à Dakar, Sénégal. Architecture Studio based in Dakar, Senegal.{% endblock %}">
+  <meta property="og:image"     content="{% block og_image %}{{ request.host_url }}static/img/og-default.jpg{% endblock %}">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale"    content="{{ 'fr_SN' if lang == 'fr' else 'en_US' }}">
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="{% block tw_title %}StudioSowa — Architecture{% endblock %}">
+  <meta name="twitter:description" content="{% block tw_description %}Agence d'architecture basée à Dakar, Sénégal.{% endblock %}">
+  <meta name="twitter:image"       content="{% block tw_image %}{{ request.host_url }}static/img/og-default.jpg{% endblock %}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <style>
+    body { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body data-lang="{{ lang }}">
+
+<!-- Custom cursor -->
+<div id="cursor"></div>
+
+<!-- Page transition overlay -->
+<div class="page-transition-overlay" id="pageTransition"></div>
+
+<!-- Loading screen (only on first visit) -->
+<div id="loader">
+  <div class="loader-name">
+    <span>Studio</span><span>Sowa</span>
+  </div>
+  <div class="loader-counter" id="loaderCounter">0%</div>
+</div>
+
+<!-- Navigation -->
+<nav id="nav" role="navigation">
+  <a href="{{ url_for('index') }}" class="nav-logo" aria-label="StudioSowa — Accueil">
+    StudioSowa
+  </a>
+
+  <ul class="nav-links" role="list">
+    <li>
+      <a href="{{ url_for('index') }}"
+         class="{% if request.endpoint == 'index' %}active{% endif %}">
+        <span class="lang-fr inline">Projets</span>
+        <span class="lang-en inline">Projects</span>
+      </a>
+    </li>
+    <li>
+      <a href="{{ url_for('studio') }}"
+         class="{% if request.endpoint == 'studio' %}active{% endif %}">
+        Studio
+      </a>
+    </li>
+    <li>
+      <a href="{{ url_for('contact') }}"
+         class="{% if request.endpoint == 'contact' %}active{% endif %}">
+        Contact
+      </a>
+    </li>
+    <li>
+      <div class="lang-switcher" aria-label="Langue / Language">
+        <button onclick="setLang('fr')" id="btn-fr" class="{% if lang == 'fr' %}active{% endif %}">FR</button>
+        <span class="sep">/</span>
+        <button onclick="setLang('en')" id="btn-en" class="{% if lang == 'en' %}active{% endif %}">EN</button>
+      </div>
+    </li>
+  </ul>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {# Flash messages shown only in admin — handled in admin templates #}
+  {% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+
+<!-- Footer -->
+{% block footer %}
+<footer>
+  <span>© {{ 2025 }} StudioSowa</span>
+  <span>
+    Dakar, Sénégal
+  </span>
+</footer>
+{% endblock %}
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

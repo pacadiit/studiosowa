@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}StudioSowa{% endblock %}
+
+{% block content %}
+<main id="home" role="main">
+  <section class="projects-grid" aria-label="Projets">
+
+    {% if not projects %}
+    <div style="grid-column: 1 / -1; padding: 120px 48px; text-align: center;">
+      <p style="font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: #a0a09a;">
+        <span class="lang-fr">Aucun projet publié pour l'instant.</span>
+        <span class="lang-en">No projects published yet.</span>
+      </p>
+    </div>
+    {% endif %}
+
+    {% for project in projects %}
+    <a href="{{ url_for('project_detail', slug=project.slug) }}"
+       class="project-card {{ project.image_size }}"
+       aria-label="{{ project.title_fr if lang == 'fr' else project.title_en }}">
+
+      {% if project.featured_image %}
+        <img
+          class="project-card__image"
+          src="{{ image_url(project.featured_image) }}"
+          alt="{{ project.title_fr if lang == 'fr' else project.title_en }}"
+          loading="{% if loop.index <= 3 %}eager{% else %}lazy{% endif %}"
+        >
+      {% else %}
+        <div class="project-card__placeholder">
+          <span>{{ project.year or '—' }}</span>
+        </div>
+      {% endif %}
+
+      <div class="project-card__overlay" aria-hidden="true">
+        <p class="project-card__title">
+          <span class="lang-fr inline">{{ project.title_fr }}</span>
+          <span class="lang-en inline">{{ project.title_en }}</span>
+        </p>
+        {% if project.location %}
+        <p class="project-card__location">{{ project.location }}</p>
+        {% endif %}
+      </div>
+    </a>
+    {% endfor %}
+
+  </section>
+</main>
+{% endblock %}
