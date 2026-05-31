@@ -134,7 +134,7 @@ class ProjectImage(db.Model):
 
     @property
     def url(self):
-        return url_for('static', filename=f'uploads/{self.filename}')
+        return image_url(self.filename)
 
 
 # ---------------------------------------------------------------------------
@@ -637,7 +637,7 @@ def admin_upload_image(project_id):
         'success': True,
         'image_id': img.id,
         'filename': filename,
-        'url': url_for('static', filename=f'uploads/{filename}'),
+        'url': image_url(filename),
     })
 
 
