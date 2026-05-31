@@ -736,11 +736,31 @@ def seed_demo_projects():
 
 
 # ---------------------------------------------------------------------------
-# Entry point
+# Initialisation base de données
+# ---------------------------------------------------------------------------
+
+_db_ready = False
+
+@app.before_request
+def ensure_db():
+    """
+    Crée les tables à la première requête reçue.
+    Fonctionne avec gunicorn (plusieurs workers) et SQLite/PostgreSQL.
+    """
+    global _db_ready
+    if not _db_ready:
+        try:
+            db.create_all()
+            seed_demo_projects()
+            _db_ready = True
+            print("[StudioSowa] Base de données initialisée.")
+        except Exception as e:
+            print(f"[StudioSowa] Erreur init DB : {e}")
+
+
+# ---------------------------------------------------------------------------
+# Entry point (développement local uniquement)
 # ---------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        seed_demo_projects()
     app.run(debug=True, host='0.0.0.0', port=5000)
