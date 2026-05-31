@@ -40,9 +40,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, 'static', 'uploads')
 app.config['MAX_CONTENT_LENGTH'] = 80 * 1024 * 1024  # 80 MB
 
-ADMIN_PASSWORD_HASH = generate_password_hash(
-    os.environ.get('ADMIN_PASSWORD', 'sowa2024!')
-)
+def get_admin_password():
+    return os.environ.get('ADMIN_PASSWORD', 'sowa2024!')
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'webp', 'gif'}
 
 # Cloudinary — stockage cloud des images (production)
@@ -402,7 +401,7 @@ def admin_login():
     error = None
     if request.method == 'POST':
         password = request.form.get('password', '')
-        if check_password_hash(ADMIN_PASSWORD_HASH, password):
+        if password == get_admin_password():
             session['admin_logged_in'] = True
             session.permanent = True
             return redirect(url_for('admin_projects'))
