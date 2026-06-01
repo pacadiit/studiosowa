@@ -1435,6 +1435,13 @@ body[data-lang="en"] span.lang-en { display: inline; }
   .admin-form-grid { grid-template-columns: 1fr; }
 }
 
+/* ── Touch : cache le curseur custom ── */
+@media (hover: none) and (pointer: coarse) {
+  #cursor { display: none !important; }
+  body { cursor: auto; }
+  button { cursor: pointer; }
+}
+
 /* ── Mobile 600px ── */
 @media (max-width: 600px) {
 
