@@ -1375,63 +1375,100 @@ body[data-lang="en"] span.lang-en { display: inline; }
 /* ---------------------------------------------------------
    12. Responsive
    --------------------------------------------------------- */
-@media (max-width: 1200px) {
-  .project-page {
-    grid-template-columns: 300px 1fr;
-  }
-  .project-sidebar {
-    padding: var(--nav-h) 32px 32px;
-  }
-}
 
+/* ── Tablette 900px ── */
 @media (max-width: 900px) {
-  .projects-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .project-card.large,
-  .project-card.medium {
-    grid-column: span 1;
-  }
 
-  .project-page {
+  /* Nav */
+  nav#nav { padding: 0 24px; }
+  .nav-logo__img { height: 28px; }
+  .nav-links { gap: 20px; }
+
+  /* Grille projets */
+  .projects-grid { grid-template-columns: repeat(2, 1fr); }
+  .project-card.large,
+  .project-card.medium { grid-column: span 1; }
+
+  /* Page projet — 1 colonne */
+  .proj-layout {
     grid-template-columns: 1fr;
   }
-  .project-sidebar {
+  .proj-info {
     position: static;
-    height: auto;
-    border-right: none;
+    max-height: none;
+    padding: calc(var(--nav-h) + 24px) 24px 24px;
     border-bottom: 1px solid var(--gray-light);
   }
+  .proj-desc { padding: 32px 24px; }
+  .proj-gallery { gap: 3px; }
 
+  /* Studio — 1 colonne */
+  .agence-hero-block {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .agence-hero-block .agence-row__title:nth-child(1) { grid-column: 1; grid-row: auto; }
+  .agence-hero-block .agence-row__text--top          { grid-column: 1; grid-row: auto; padding-bottom: 0; }
+  .agence-hero-block .agence-row__title:nth-child(3) { grid-column: 1; grid-row: auto; padding-top: 32px; }
+  .agence-hero-block .agence-row__text--bottom       { grid-column: 1; grid-row: auto; padding-top: 16px; }
+  .agence-hero-photo {
+    grid-column: 1;
+    grid-row: auto;
+    min-height: 55vw;
+  }
 
+  .agence-row { grid-template-columns: 1fr; min-height: auto; }
+  .agence-row__title { padding: 40px 24px 12px; }
+  .agence-row__text  { padding: 0 24px 48px; }
+  .agence-row__photo { min-height: 60vw; }
+
+  .agence-contact-footer { padding: 40px 24px; }
+
+  /* Contact */
   .contact-page { grid-template-columns: 1fr; }
-  .contact-info { border-right: none; border-bottom: 1px solid var(--gray-light); padding: 48px; }
-  .contact-form { padding: 48px; }
+  .contact-info { border-right: none; border-bottom: 1px solid var(--gray-light); padding: 40px 24px; }
+  .contact-form { padding: 32px 24px; }
 
+  /* Admin */
   .admin-layout { grid-template-columns: 1fr; }
   .admin-sidebar { display: none; }
   .admin-form-grid { grid-template-columns: 1fr; }
 }
 
+/* ── Mobile 600px ── */
 @media (max-width: 600px) {
-  nav#nav { padding: 0 20px; }
-  .nav-links { gap: 20px; }
 
-  .projects-grid {
-    grid-template-columns: 1fr;
-    gap: 2px;
-  }
+  /* Nav compacte */
+  nav#nav { padding: 0 16px; height: 50px; }
+  .nav-logo__img { height: 24px; }
+  .nav-links { gap: 14px; }
+  .nav-links a, .nav-links button { font-size: 10px; }
+  :root { --nav-h: 50px; }
+
+  /* Grille projets 1 colonne */
+  .projects-grid { grid-template-columns: 1fr; gap: 2px; }
   .project-card.large,
-  .project-card.medium {
-    grid-column: span 1;
-  }
+  .project-card.medium { grid-column: span 1; }
 
+  /* Page projet */
+  .proj-info { padding: calc(var(--nav-h) + 16px) 16px 20px; }
+  .proj-desc { padding: 24px 16px; }
+  .proj-title { font-size: 22px; }
+
+  /* Studio */
+  .agence-row__title { padding: 32px 16px 8px; }
+  .agence-row__text  { padding: 0 16px 36px; }
+  .agence-hero-photo { min-height: 70vw; }
+  .agence-bigtitle { font-size: 18px; }
+  .agence-contact-footer { padding: 32px 16px; }
+
+  /* Contact */
   .contact-info,
-  .contact-form { padding: 32px; }
+  .contact-form { padding: 24px 16px; }
 
-  footer { padding: 24px 20px; flex-direction: column; gap: 8px; text-align: center; }
+  footer { padding: 20px 16px; flex-direction: column; gap: 6px; text-align: center; }
 
-  .admin-main { padding: 24px 20px; }
+  .admin-main { padding: 20px 16px; }
 }
 
 /* ---------------------------------------------------------
