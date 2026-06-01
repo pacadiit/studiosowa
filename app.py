@@ -322,6 +322,11 @@ def inject_lang():
 
 @app.route('/')
 def index():
+    return render_template('studio.html')
+
+
+@app.route('/projets')
+def projets():
     projects = (Project.query
                 .filter_by(published=True)
                 .order_by(Project.sort_order, Project.created_at.desc())
@@ -348,7 +353,7 @@ def project_detail(slug):
 
 @app.route('/studio')
 def studio():
-    return render_template('studio.html')
+    return redirect('/', 301)
 
 
 @app.route('/contact', methods=['GET', 'POST'])
