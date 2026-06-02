@@ -785,8 +785,8 @@ main#home {
 
 .agence-hero-block .agence-row__title:nth-child(1) { grid-column: 1; grid-row: 1; }
 .agence-hero-block .agence-row__text--top          { grid-column: 2; grid-row: 1; padding-top: calc(var(--nav-h) + 40px); padding-bottom: 20px; }
-.agence-hero-block .agence-row__title:nth-child(3) { grid-column: 1; grid-row: 2; padding-top: 0; }
-.agence-hero-block .agence-row__text--bottom       { grid-column: 2; grid-row: 2; padding-top: 20px; }
+.agence-hero-block .agence-row__title:nth-child(3) { grid-column: 1; grid-row: 2; padding-top: 40px; }
+.agence-hero-block .agence-row__text--bottom       { grid-column: 2; grid-row: 2; padding-top: 40px; }
 
 /* Photo Youssou — span 2 rangées */
 .agence-hero-photo {
