@@ -827,6 +827,7 @@ main#home {
   display: flex;
   flex-direction: column;
   gap: 28px;
+  text-align: center;
 }
 
 .agence-row__photo,
