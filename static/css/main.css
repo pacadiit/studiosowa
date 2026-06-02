@@ -125,7 +125,7 @@ nav#nav {
   height: var(--nav-h);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 0 32px;
   z-index: 500;
   mix-blend-mode: difference;
