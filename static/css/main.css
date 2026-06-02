@@ -428,16 +428,11 @@ main#home {
 
 /* ── Colonne gauche : infos ── */
 .proj-info {
-  position: sticky;
-  top: var(--nav-h);
   padding: 48px 40px 48px 60px;
   display: flex;
   flex-direction: column;
   gap: 0;
-  max-height: calc(100vh - var(--nav-h));
-  overflow-y: auto;
 }
-.proj-info::-webkit-scrollbar { display: none; }
 
 .proj-back {
   display: inline-flex;
