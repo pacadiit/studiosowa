@@ -1053,19 +1053,44 @@ main#home {
 
 .contact-social {
   display: flex;
-  gap: 24px;
+  gap: 20px;
   margin-top: 48px;
 }
 
 .contact-social a {
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--black);
-  padding-bottom: 2px;
-  transition: opacity 0.3s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--black);
+  transition: opacity 0.2s, transform 0.2s;
+  border-bottom: none;
 }
-.contact-social a:hover { opacity: 0.5; }
+.contact-social a:hover { opacity: 0.5; transform: scale(1.1); }
+
+/* Studio social */
+.agence-contact-footer__email {
+  margin-bottom: 16px;
+}
+.agence-contact-footer__email a {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--gray-dark);
+  transition: color 0.2s;
+}
+.agence-contact-footer__email a:hover { color: var(--black); }
+
+.agence-contact-footer__social {
+  display: flex;
+  gap: 20px;
+  margin-top: 12px;
+}
+.agence-contact-footer__social a {
+  display: inline-flex;
+  align-items: center;
+  color: var(--black);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.agence-contact-footer__social a:hover { opacity: 0.5; transform: scale(1.1); }
 
 .contact-form {
   padding: 80px;
