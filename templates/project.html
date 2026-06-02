@@ -7,6 +7,8 @@
 {% block og_image %}{% if project.featured_image %}{{ image_url(project.featured_image) }}{% else %}{{ request.host_url }}static/img/og-default.jpg{% endif %}{% endblock %}
 {% block meta_description %}{{ project.description_fr | truncate(160, True, '…') if lang == 'fr' and project.description_fr else project.description_en | truncate(160, True, '…') if project.description_en else project.title_fr }}{% endblock %}
 
+{% block extra_head %}<style>body { --hide-proj-index: 1; } .proj-index { display: none !important; }</style>{% endblock %}
+
 {% block content %}
 <main class="proj-page" role="main">
 
@@ -84,6 +86,32 @@
         {% endif %}
       </div>
 
+
+      <!-- Index projets inline -->
+      {% if nav_projects %}
+      <div class="proj-inline-index" id="projInlineIndex">
+        <button class="proj-inline-index__trigger" id="projInlineBtn">
+          <span>INDEX</span>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 15l-6-6-6 6"/>
+          </svg>
+        </button>
+        <ul class="proj-inline-index__list" id="projInlineList">
+          {% for p in nav_projects %}
+          <li>
+            <a href="{{ url_for('project_detail', slug=p.slug) }}"
+               class="proj-index__item {% if request.view_args.get('slug') == p.slug %}proj-index__item--active{% endif %}">
+              <span class="proj-index__num">{{ '%02d'|format(loop.index) }}</span>
+              <span class="proj-index__name">
+                <span class="lang-fr">{{ p.title_fr }}</span>
+                <span class="lang-en">{{ p.title_en }}</span>
+              </span>
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
 
       <!-- Prev / Next -->
       <nav class="proj-nav" aria-label="Navigation projets">
@@ -209,6 +237,18 @@
   });
   </script>
   {% endif %}
+
+<script>
+// Index inline toggle
+(function() {
+  var wrap = document.getElementById('projInlineIndex');
+  var btn  = document.getElementById('projInlineBtn');
+  if (!wrap || !btn) return;
+  btn.addEventListener('click', function() {
+    wrap.classList.toggle('open');
+  });
+})();
+</script>
 
 </main>
 {% endblock %}

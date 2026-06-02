@@ -175,6 +175,49 @@ nav#nav {
 .nav-links a:hover::after,
 .nav-links a.active::after { transform: scaleX(1); }
 
+/* ── Index projets inline (dans colonne info projet) ── */
+.proj-inline-index {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  border-top: 1px solid var(--gray-light);
+}
+
+.proj-inline-index__trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--black);
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  padding: 16px 0;
+  width: 100%;
+  text-align: left;
+  transition: opacity 0.2s;
+}
+.proj-inline-index__trigger:hover { opacity: 0.6; }
+.proj-inline-index__trigger svg { transition: transform 0.3s var(--ease-out); }
+.proj-inline-index.open .proj-inline-index__trigger svg { transform: rotate(180deg); }
+
+.proj-inline-index__list {
+  list-style: none;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s var(--ease-out);
+}
+.proj-inline-index.open .proj-inline-index__list {
+  max-height: 600px;
+}
+.proj-inline-index .proj-index__item {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--gray-light);
+}
+
 /* ── Index projets — fixe bas gauche ── */
 .proj-index {
   position: fixed;
