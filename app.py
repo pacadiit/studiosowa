@@ -69,6 +69,18 @@ MAIL_RECIPIENT = os.environ.get('MAIL_RECIPIENT', MAIL_USERNAME)
 
 db = SQLAlchemy(app)
 
+# Injecter la liste des projets dans tous les templates (pour le dropdown nav)
+@app.context_processor
+def inject_nav_projects():
+    try:
+        projects = (Project.query
+                    .filter_by(published=True)
+                    .order_by(Project.sort_order, Project.created_at.desc())
+                    .all())
+    except Exception:
+        projects = []
+    return dict(nav_projects=projects)
+
 # Redirection www → non-www
 @app.before_request
 def redirect_www():
@@ -327,11 +339,13 @@ def index():
 
 @app.route('/projets')
 def projets():
-    projects = (Project.query
-                .filter_by(published=True)
-                .order_by(Project.sort_order, Project.created_at.desc())
-                .all())
-    return render_template('index.html', projects=projects)
+    first = (Project.query
+             .filter_by(published=True)
+             .order_by(Project.sort_order, Project.created_at.desc())
+             .first())
+    if first:
+        return redirect(url_for('project_detail', slug=first.slug), 302)
+    return redirect(url_for('index'))
 
 
 @app.route('/projet/<slug>')

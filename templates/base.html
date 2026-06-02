@@ -63,7 +63,7 @@
   <ul class="nav-links" role="list">
     <li>
       <a href="{{ url_for('projets') }}"
-         class="{% if request.endpoint == 'projets' %}active{% endif %}">
+         class="{% if request.endpoint in ['projets','project_detail'] %}active{% endif %}">
         <span class="lang-fr inline">Projets</span>
         <span class="lang-en inline">Projects</span>
       </a>
@@ -107,6 +107,34 @@
   </span>
 </footer>
 {% endblock %}
+
+<!-- Index projets — bas gauche fixe -->
+{% if nav_projects %}
+<div class="proj-index" id="projIndex">
+  <button class="proj-index__trigger" aria-haspopup="true" aria-expanded="false" id="projIndexBtn">
+    <span class="lang-fr">Index</span>
+    <span class="lang-en">Index</span>
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+  </button>
+  <ul class="proj-index__list" id="projIndexList" role="menu">
+    {% for p in nav_projects %}
+    <li>
+      <a href="{{ url_for('project_detail', slug=p.slug) }}"
+         class="proj-index__item {% if request.endpoint == 'project_detail' and request.view_args.get('slug') == p.slug %}proj-index__item--active{% endif %}"
+         role="menuitem">
+        <span class="proj-index__num">{{ '%02d'|format(loop.index) }}</span>
+        <span class="proj-index__name">
+          <span class="lang-fr">{{ p.title_fr }}</span>
+          <span class="lang-en">{{ p.title_en }}</span>
+        </span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
 
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% block extra_scripts %}{% endblock %}

@@ -5,6 +5,44 @@
 'use strict';
 
 // ---------------------------------------------------------
+// Index projets — bas gauche (survol + clic)
+// ---------------------------------------------------------
+document.addEventListener('DOMContentLoaded', function () {
+  const wrap = document.getElementById('projIndex');
+  if (!wrap) return;
+  const btn  = document.getElementById('projIndexBtn');
+
+  let closeTimer;
+
+  function openIndex() {
+    clearTimeout(closeTimer);
+    wrap.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeIndex() {
+    closeTimer = setTimeout(function () {
+      wrap.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    }, 150);
+  }
+
+  // Survol
+  wrap.addEventListener('mouseenter', openIndex);
+  wrap.addEventListener('mouseleave', closeIndex);
+
+  // Clic (mobile)
+  btn.addEventListener('click', function () {
+    wrap.classList.contains('open') ? closeIndex() : openIndex();
+  });
+
+  // Fermer si clic ailleurs
+  document.addEventListener('click', function (e) {
+    if (!wrap.contains(e.target)) closeIndex();
+  });
+});
+
+// ---------------------------------------------------------
 // Language management
 // ---------------------------------------------------------
 function getLang() {
