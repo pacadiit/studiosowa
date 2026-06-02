@@ -584,8 +584,6 @@ main#home {
 
 /* ── Colonne droite : galerie ── */
 .proj-gallery {
-  position: sticky;
-  top: var(--nav-h);
   overflow: hidden;
 }
 
