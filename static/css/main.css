@@ -837,8 +837,15 @@ main#home {
   padding-right: 40px;
 }
 
+.agence-row__photo {
+  padding-top: 60px;
+}
+
 .agence-row__photo .agence-photo {
+  top: 60px;
   right: 40px;
+  bottom: 0;
+  left: 0;
 }
 
 /* Petit espacement entre les photos */
