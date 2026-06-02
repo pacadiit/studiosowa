@@ -807,11 +807,10 @@ main#home {
 .agence-row:nth-child(3) { min-height: 48vh; }
 
 .agence-row__title {
-  padding: 80px 48px 80px 72px;
+  padding: calc(var(--nav-h) + 40px) 48px 80px 60px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding-top: calc(var(--nav-h) + 40px);
 }
 
 .agence-row__text {
