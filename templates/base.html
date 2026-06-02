@@ -108,8 +108,8 @@
 </footer>
 {% endblock %}
 
-<!-- Index projets — bas gauche fixe -->
-{% if nav_projects %}
+<!-- Index projets — bas gauche fixe (pages projet uniquement) -->
+{% if nav_projects and request.endpoint not in ['index', 'studio', 'contact'] %}
 <div class="proj-index" id="projIndex">
   <button class="proj-index__trigger" aria-haspopup="true" aria-expanded="false" id="projIndexBtn">
     <span class="lang-fr">Index</span>
