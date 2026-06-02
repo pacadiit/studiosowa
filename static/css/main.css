@@ -795,13 +795,14 @@ main#home {
   position: relative;
   min-height: 75vh;
   padding-top: calc(var(--nav-h) + 40px);
+  padding-right: 40px;
 }
 
 .agence-hero-photo .agence-photo {
   top: calc(var(--nav-h) + 40px);
   bottom: 0;
   left: 0;
-  right: 0;
+  right: 40px;
   position: absolute;
 }
 
@@ -833,6 +834,11 @@ main#home {
 .agence-row__photo,
 .agence-hero-photo {
   position: relative;
+  padding-right: 40px;
+}
+
+.agence-row__photo .agence-photo {
+  right: 40px;
 }
 
 /* Petit espacement entre les photos */
