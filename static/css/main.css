@@ -584,48 +584,110 @@ main#home {
 
 /* ── Colonne droite : galerie ── */
 .proj-gallery {
+  position: sticky;
+  top: var(--nav-h);
+}
+
+/* Vignette unique cliquable — effet pile */
+.proj-gallery__cover {
+  position: relative;
+  cursor: pointer;
+  aspect-ratio: 3 / 4;
+  margin: 16px 16px 0 0;
+}
+
+/* 2ème photo qui dépasse derrière */
+.proj-gallery__cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gray-light);
+  transform: translate(4px, -3px) rotate(0.8deg);
+  z-index: -1;
+  transition: transform 0.4s var(--ease-out);
+}
+
+/* 3ème photo encore derrière */
+.proj-gallery__cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gray-mid);
+  opacity: 0.3;
+  transform: translate(8px, -6px) rotate(1.6deg);
+  z-index: -2;
+  transition: transform 0.4s var(--ease-out);
+}
+
+/* Au survol, la pile s'écarte légèrement */
+.proj-gallery__cover:hover::before {
+  transform: translate(6px, -4px) rotate(1.2deg);
+}
+.proj-gallery__cover:hover::after {
+  transform: translate(11px, -8px) rotate(2.2deg);
+}
+
+.proj-gallery__cover > img,
+.proj-gallery__cover .proj-gallery__overlay {
+  position: relative;
+  z-index: 1;
+}
+
+/* Le wrapper image a overflow hidden */
+.proj-gallery__cover > img {
+  overflow: hidden;
+}
+
+.proj-gallery__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  overflow: hidden;
+  filter: grayscale(100%) brightness(0.8);
+  transition: filter 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+  position: relative;
+  z-index: 1;
+}
+
+.proj-gallery__cover:hover img {
+  filter: grayscale(0%) brightness(1);
+  transform: scale(1.03);
+}
+
+/* Overlay au survol */
+.proj-gallery__overlay {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 28px;
+  background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-out);
+}
+.proj-gallery__cover:hover .proj-gallery__overlay { opacity: 1; }
+
+.proj-gallery__count {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 8px;
 }
 
-.proj-gallery__item {
-  position: relative;
-  overflow: hidden;
-  cursor: zoom-in;
-}
-
-/* N&B par défaut, couleur au survol */
-.proj-gallery__item img {
-  width: 100%;
-  height: auto;
-  display: block;
-  filter: grayscale(100%) brightness(0.85);
-  transition: filter 0.5s var(--ease-out), transform 0.5s var(--ease-out);
-}
-
-.proj-gallery__item:hover img {
-  filter: grayscale(0%) brightness(1);
-  transform: scale(1.02);
-}
-
-/* Icône zoom au survol */
-.proj-gallery__hover-icon {
-  position: absolute;
-  bottom: 16px;
-  right: 16px;
-  width: 36px;
-  height: 36px;
-  background: rgba(255,255,255,0.9);
-  border-radius: 50%;
+.proj-gallery__cta {
   display: flex;
   align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s;
-  color: var(--black);
+  gap: 10px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--white);
+  font-weight: 400;
 }
-.proj-gallery__item:hover .proj-gallery__hover-icon { opacity: 1; }
 
 .proj-gallery__empty {
   padding: 80px 40px;
