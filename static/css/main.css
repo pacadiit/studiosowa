@@ -590,6 +590,7 @@ main#home {
 .proj-gallery {
   overflow: hidden;
   padding-top: calc(var(--nav-h) + 40px);
+  padding-right: 40px;
 }
 
 /* Wrapper pile — crée le contexte d'empilement */
