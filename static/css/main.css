@@ -462,6 +462,88 @@ main#home {
   padding-top: var(--nav-h);
 }
 
+/* Indicateur latéral droit */
+.proj-progress {
+  position: fixed;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 400;
+  mix-blend-mode: difference;
+}
+
+.proj-progress__num,
+.proj-progress__total {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--white);
+  line-height: 1;
+}
+
+.proj-progress__bar {
+  width: 1px;
+  height: 60px;
+  background: rgba(255,255,255,0.25);
+  position: relative;
+}
+
+.proj-progress__fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--white);
+  transition: height 0.3s;
+}
+
+/* Overlay transition */
+.proj-transition {
+  position: fixed;
+  inset: 0;
+  background: var(--black);
+  z-index: 8500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(100%);
+  transition: transform 0.55s cubic-bezier(0.16,1,0.3,1);
+  pointer-events: none;
+}
+
+.proj-transition.from-top {
+  transform: translateY(-100%);
+}
+
+.proj-transition.active {
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.proj-transition__label {
+  text-align: center;
+  color: var(--white);
+}
+
+.proj-transition__next-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 12px;
+}
+
+.proj-transition__next-title {
+  display: block;
+  font-size: clamp(18px, 3vw, 36px);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+}
+
 .proj-layout {
   display: grid;
   grid-template-columns: 26% 1fr 42%;

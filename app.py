@@ -362,7 +362,8 @@ def project_detail(slug):
     prev_project = all_projects[idx - 1] if idx > 0 else None
     next_project = all_projects[idx + 1] if idx < len(all_projects) - 1 else None
     return render_template('project.html', project=project,
-                           prev_project=prev_project, next_project=next_project)
+                           prev_project=prev_project, next_project=next_project,
+                           proj_index=idx + 1, proj_total=len(all_projects))
 
 
 @app.route('/studio')

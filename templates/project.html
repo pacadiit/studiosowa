@@ -10,7 +10,30 @@
 {% block extra_head %}<style>body { --hide-proj-index: 1; } .proj-index { display: none !important; }</style>{% endblock %}
 
 {% block content %}
-<main class="proj-page" role="main">
+
+<!-- Indicateur latéral -->
+<div class="proj-progress" aria-hidden="true">
+  <span class="proj-progress__num">{{ '%02d'|format(proj_index) }}</span>
+  <div class="proj-progress__bar">
+    <div class="proj-progress__fill" style="height: {{ (proj_index / proj_total * 100)|round|int }}%"></div>
+  </div>
+  <span class="proj-progress__total">{{ '%02d'|format(proj_total) }}</span>
+</div>
+
+<!-- Overlay transition projet suivant -->
+<div class="proj-transition" id="projTransition">
+  <div class="proj-transition__label" id="projTransitionLabel">
+    <span class="proj-transition__next-label lang-fr">Projet suivant</span>
+    <span class="proj-transition__next-label lang-en">Next project</span>
+    <span class="proj-transition__next-title" id="projTransitionTitle"></span>
+  </div>
+</div>
+
+<main class="proj-page" role="main"
+  data-next="{{ url_for('project_detail', slug=next_project.slug) if next_project else '' }}"
+  data-prev="{{ url_for('project_detail', slug=prev_project.slug) if prev_project else '' }}"
+  data-next-title="{{ (next_project.title_fr if next_project) or '' }}"
+  data-prev-title="{{ (prev_project.title_fr if prev_project) or '' }}">
 
   <!-- ══════════════════════════════════════════════════
        LAYOUT 3 COLONNES
@@ -248,8 +271,67 @@
   var wrap = document.getElementById('projInlineIndex');
   var btn  = document.getElementById('projInlineBtn');
   if (!wrap || !btn) return;
-  btn.addEventListener('click', function() {
-    wrap.classList.toggle('open');
+  btn.addEventListener('click', function() { wrap.classList.toggle('open'); });
+})();
+
+// Navigation entre projets par scroll
+(function() {
+  var page       = document.querySelector('.proj-page');
+  var overlay    = document.getElementById('projTransition');
+  var titleEl    = document.getElementById('projTransitionTitle');
+  if (!page) return;
+
+  var nextUrl    = page.dataset.next;
+  var prevUrl    = page.dataset.prev;
+  var nextTitle  = page.dataset.nextTitle;
+  var prevTitle  = page.dataset.prevTitle;
+  var busy       = false;
+  var touchStartY = 0;
+
+  function atBottom() {
+    return (window.innerHeight + window.scrollY) >= document.body.scrollHeight - 4;
+  }
+  function atTop() {
+    return window.scrollY <= 0;
+  }
+
+  function goTo(url, title, dir) {
+    if (busy || !url) return;
+    busy = true;
+    titleEl.textContent = title;
+    overlay.classList.add('active');
+    overlay.classList.toggle('from-top', dir === 'up');
+    setTimeout(function() { window.location.href = url; }, 600);
+  }
+
+  // Wheel
+  var wheelAccum = 0;
+  window.addEventListener('wheel', function(e) {
+    if (busy) { e.preventDefault(); return; }
+    wheelAccum += e.deltaY;
+    if (wheelAccum > 120 && atBottom() && nextUrl) {
+      e.preventDefault();
+      goTo(nextUrl, nextTitle, 'down');
+    } else if (wheelAccum < -120 && atTop() && prevUrl) {
+      e.preventDefault();
+      goTo(prevUrl, prevTitle, 'up');
+    }
+    clearTimeout(window._wheelReset);
+    window._wheelReset = setTimeout(function() { wheelAccum = 0; }, 300);
+  }, { passive: false });
+
+  // Touch
+  window.addEventListener('touchstart', function(e) { touchStartY = e.touches[0].clientY; }, { passive: true });
+  window.addEventListener('touchend', function(e) {
+    var dy = touchStartY - e.changedTouches[0].clientY;
+    if (dy > 60 && atBottom()) goTo(nextUrl, nextTitle, 'down');
+    if (dy < -60 && atTop())   goTo(prevUrl, prevTitle, 'up');
+  }, { passive: true });
+
+  // Clavier
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') goTo(nextUrl, nextTitle, 'down');
+    if (e.key === 'ArrowUp'   || e.key === 'ArrowLeft')  goTo(prevUrl, prevTitle, 'up');
   });
 })();
 </script>
