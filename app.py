@@ -359,8 +359,12 @@ def project_detail(slug):
                     .all())
     ids = [p.id for p in all_projects]
     idx = ids.index(project.id)
-    prev_project = all_projects[idx - 1] if idx > 0 else None
-    next_project = all_projects[idx + 1] if idx < len(all_projects) - 1 else None
+    if len(all_projects) > 1:
+        prev_project = all_projects[(idx - 1) % len(all_projects)]
+        next_project = all_projects[(idx + 1) % len(all_projects)]
+    else:
+        prev_project = None
+        next_project = None
     return render_template('project.html', project=project,
                            prev_project=prev_project, next_project=next_project,
                            proj_index=idx + 1, proj_total=len(all_projects))

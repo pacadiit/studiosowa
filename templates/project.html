@@ -11,29 +11,126 @@
 
 {% block content %}
 
-<!-- Indicateur latéral -->
-<div class="proj-progress" aria-hidden="true">
-  <span class="proj-progress__num">{{ '%02d'|format(proj_index) }}</span>
-  <div class="proj-progress__bar">
-    <div class="proj-progress__fill" style="height: {{ (proj_index / proj_total * 100)|round|int }}%"></div>
-  </div>
-  <span class="proj-progress__total">{{ '%02d'|format(proj_total) }}</span>
+<!-- ══ Barre navigation projets — fixe en bas ══ -->
+<nav class="proj-nav-bar" aria-label="Navigation projets">
+
+  {% if prev_project %}
+  <a href="{{ url_for('project_detail', slug=prev_project.slug) }}" class="proj-nav-bar__btn proj-nav-bar__btn--prev" id="btnPrev">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M19 12H5M12 19l-7-7 7-7"/>
+    </svg>
+    <span class="proj-nav-bar__title">
+      <span class="lang-fr">{{ prev_project.title_fr }}</span>
+      <span class="lang-en">{{ prev_project.title_en }}</span>
+    </span>
+  </a>
+  {% else %}
+  <span class="proj-nav-bar__btn proj-nav-bar__btn--disabled"></span>
+  {% endif %}
+
+  <span class="proj-nav-bar__counter">{{ '%02d'|format(proj_index) }} / {{ '%02d'|format(proj_total) }}</span>
+
+  {% if next_project %}
+  <a href="{{ url_for('project_detail', slug=next_project.slug) }}" class="proj-nav-bar__btn proj-nav-bar__btn--next" id="btnNext">
+    <span class="proj-nav-bar__title">
+      <span class="lang-fr">{{ next_project.title_fr }}</span>
+      <span class="lang-en">{{ next_project.title_en }}</span>
+    </span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M5 12h14M12 5l7 7-7 7"/>
+    </svg>
+  </a>
+  {% else %}
+  <span class="proj-nav-bar__btn proj-nav-bar__btn--disabled"></span>
+  {% endif %}
+
+</nav>
+
+<!-- Overlay de transition -->
+<div class="proj-nav-overlay" id="projNavOverlay">
+  <span class="proj-nav-overlay__title" id="projNavOverlayTitle"></span>
 </div>
 
-<!-- Overlay transition projet suivant -->
-<div class="proj-transition" id="projTransition">
-  <div class="proj-transition__label" id="projTransitionLabel">
-    <span class="proj-transition__next-label lang-fr">Projet suivant</span>
-    <span class="proj-transition__next-label lang-en">Next project</span>
-    <span class="proj-transition__next-title" id="projTransitionTitle"></span>
-  </div>
+<!-- Hint clavier -->
+<div class="proj-key-hint" id="projKeyHint">
+  <span>← →</span>
+  <span class="lang-fr">naviguer entre les projets</span>
+  <span class="lang-en">navigate between projects</span>
 </div>
 
-<main class="proj-page" role="main"
-  data-next="{{ url_for('project_detail', slug=next_project.slug) if next_project else '' }}"
-  data-prev="{{ url_for('project_detail', slug=prev_project.slug) if prev_project else '' }}"
-  data-next-title="{{ (next_project.title_fr if next_project) or '' }}"
-  data-prev-title="{{ (prev_project.title_fr if prev_project) or '' }}">
+<!-- ══ Scroll-to-Navigate : zone PREV (haut) ══ -->
+{% if prev_project %}
+<div class="scroll-nav-zone scroll-nav-zone--prev" id="scrollNavPrev">
+  <div class="scroll-nav-zone__inner">
+    <div class="scroll-nav-progress">
+      <svg viewBox="0 0 48 48">
+        <circle class="scroll-nav-progress__track" cx="24" cy="24" r="20"/>
+        <circle class="scroll-nav-progress__fill" id="scrollNavPrevFill" cx="24" cy="24" r="20"/>
+      </svg>
+      <div class="scroll-nav-progress__arrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 15l-6-6-6 6"/></svg>
+      </div>
+    </div>
+    <span class="scroll-nav-zone__label">
+      <span class="lang-fr">Projet précédent</span>
+      <span class="lang-en">Previous project</span>
+    </span>
+    <span class="scroll-nav-zone__title">
+      <span class="lang-fr">{{ prev_project.title_fr }}</span>
+      <span class="lang-en">{{ prev_project.title_en }}</span>
+    </span>
+  </div>
+</div>
+{% endif %}
+
+<!-- ══ Scroll-to-Navigate : zone NEXT (bas) ══ -->
+{% if next_project %}
+<div class="scroll-nav-zone scroll-nav-zone--next" id="scrollNavNext">
+  <div class="scroll-nav-zone__inner">
+    <span class="scroll-nav-zone__label">
+      <span class="lang-fr">Projet suivant</span>
+      <span class="lang-en">Next project</span>
+    </span>
+    <span class="scroll-nav-zone__title">
+      <span class="lang-fr">{{ next_project.title_fr }}</span>
+      <span class="lang-en">{{ next_project.title_en }}</span>
+    </span>
+    <div class="scroll-nav-progress">
+      <svg viewBox="0 0 48 48">
+        <circle class="scroll-nav-progress__track" cx="24" cy="24" r="20"/>
+        <circle class="scroll-nav-progress__fill" id="scrollNavNextFill" cx="24" cy="24" r="20"/>
+      </svg>
+      <div class="scroll-nav-progress__arrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 15l-6-6-6 6"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- ══ Dots latéraux — indicateur position ══ -->
+{% if nav_projects %}
+<div class="scroll-nav-dots" id="scrollNavDots">
+  {% for p in nav_projects %}
+  <a href="{{ url_for('project_detail', slug=p.slug) }}"
+     class="scroll-nav-dot {% if request.view_args.get('slug') == p.slug %}scroll-nav-dot--active{% endif %}"
+     data-index="{{ loop.index }}">
+    <span class="scroll-nav-dot__tip">
+      <span class="lang-fr">{{ p.title_fr }}</span>
+      <span class="lang-en">{{ p.title_en }}</span>
+    </span>
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ══ Overlay de transition scroll ══ -->
+<div class="scroll-nav-transition" id="scrollNavTransition">
+  <span class="scroll-nav-transition__title" id="scrollNavTransTitle"></span>
+  <span class="scroll-nav-transition__counter" id="scrollNavTransCounter"></span>
+</div>
+
+<main class="proj-page" role="main">
 
   <!-- ══════════════════════════════════════════════════
        LAYOUT 3 COLONNES
@@ -266,73 +363,304 @@
   {% endif %}
 
 <script>
-// Index inline toggle
+// Index inline
 (function() {
   var wrap = document.getElementById('projInlineIndex');
   var btn  = document.getElementById('projInlineBtn');
-  if (!wrap || !btn) return;
-  btn.addEventListener('click', function() { wrap.classList.toggle('open'); });
+  if (wrap && btn) btn.addEventListener('click', function() { wrap.classList.toggle('open'); });
 })();
 
-// Navigation entre projets par scroll
+// Navigation projets — transition au clic + clavier
 (function() {
-  var page       = document.querySelector('.proj-page');
-  var overlay    = document.getElementById('projTransition');
-  var titleEl    = document.getElementById('projTransitionTitle');
-  if (!page) return;
+  var overlay  = document.getElementById('projNavOverlay');
+  var titleEl  = document.getElementById('projNavOverlayTitle');
+  var btnNext  = document.getElementById('btnNext');
+  var btnPrev  = document.getElementById('btnPrev');
+  var busy     = false;
 
-  var nextUrl    = page.dataset.next;
-  var prevUrl    = page.dataset.prev;
-  var nextTitle  = page.dataset.nextTitle;
-  var prevTitle  = page.dataset.prevTitle;
-  var busy       = false;
-  var touchStartY = 0;
+  function navigate(el) {
+    if (busy || !el) return;
+    busy = true;
+    var href  = el.href;
+    var title = el.querySelector('.proj-nav-bar__title') ? el.querySelector('.proj-nav-bar__title').textContent.trim() : '';
+    titleEl.textContent = title;
+    overlay.classList.add('visible');
+    setTimeout(function() { window.location.href = href; }, 500);
+    el.addEventListener('click', function(e) { e.preventDefault(); }, { once: true });
+  }
 
+  // Clic sur les boutons
+  if (btnNext) btnNext.addEventListener('click', function(e) { e.preventDefault(); navigate(btnNext); });
+  if (btnPrev) btnPrev.addEventListener('click', function(e) { e.preventDefault(); navigate(btnPrev); });
+
+  // Clavier ← →
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight') navigate(btnNext);
+    if (e.key === 'ArrowLeft')  navigate(btnPrev);
+  });
+
+  // Hint clavier au chargement
+  var hint = document.getElementById('projKeyHint');
+  if (hint) {
+    setTimeout(function() { hint.classList.add('show'); }, 1000);
+    setTimeout(function() { hint.classList.remove('show'); }, 3500);
+  }
+})();
+</script>
+
+<!-- ══════════════════════════════════════════════════════
+     SCROLL-TO-NAVIGATE — détection overscroll + transition
+══════════════════════════════════════════════════════ -->
+<script>
+(function() {
+  /* ── Config ── */
+  var THRESHOLD  = 8;    /* ticks nécessaires pour déclencher       */
+  var DECAY_MS   = 600;  /* délai avant que le compteur se vide     */
+  var ZONE_MAX_H = 180;  /* hauteur max de la zone reveal (px)      */
+  var EDGE_PX    = 30;   /* marge pour considérer bord atteint      */
+  var CIRC       = 126;  /* stroke-dasharray du SVG (2*PI*20 arrondi) */
+
+  /* ── Éléments ── */
+  var zoneNext   = document.getElementById('scrollNavNext');
+  var zonePrev   = document.getElementById('scrollNavPrev');
+  var fillNext   = document.getElementById('scrollNavNextFill');
+  var fillPrev   = document.getElementById('scrollNavPrevFill');
+  var dots       = document.getElementById('scrollNavDots');
+  var transEl    = document.getElementById('scrollNavTransition');
+  var transTitle = document.getElementById('scrollNavTransTitle');
+  var transCtr   = document.getElementById('scrollNavTransCounter');
+  var btnNext    = document.getElementById('btnNext');
+  var btnPrev    = document.getElementById('btnPrev');
+
+  var accumNext = 0, accumPrev = 0;
+  var decayTimer = null;
+  var navigating = false;
+  var lastDir = 0;
+
+  /* ── Dots : apparition différée ── */
+  if (dots) setTimeout(function() { dots.classList.add('visible'); }, 800);
+
+  /* ── Détection bords — robuste cross-browser ── */
+  function getScrollY() {
+    return window.pageYOffset || document.documentElement.scrollTop || 0;
+  }
+  function getScrollHeight() {
+    return Math.max(
+      document.body.scrollHeight || 0,
+      document.documentElement.scrollHeight || 0
+    );
+  }
   function atBottom() {
-    return (window.innerHeight + window.scrollY) >= document.body.scrollHeight - 4;
+    var scrollY = getScrollY();
+    var viewH   = window.innerHeight;
+    var docH    = getScrollHeight();
+    /* Si la page ne scrolle pas du tout, on est à la fois en haut et en bas */
+    if (docH <= viewH + 2) return true;
+    return (scrollY + viewH) >= (docH - EDGE_PX);
   }
   function atTop() {
-    return window.scrollY <= 0;
+    return getScrollY() <= EDGE_PX;
+  }
+  function lightboxOpen() {
+    var lb = document.getElementById('lightbox');
+    return lb && lb.classList.contains('open');
   }
 
-  function goTo(url, title, dir) {
-    if (busy || !url) return;
-    busy = true;
-    titleEl.textContent = title;
-    overlay.classList.add('active');
-    overlay.classList.toggle('from-top', dir === 'up');
-    setTimeout(function() { window.location.href = url; }, 600);
-  }
+  /* ── Mise à jour visuelle zone ── */
+  function updateZone(zone, fill, progress) {
+    if (!zone) return;
+    var ratio = Math.min(progress / THRESHOLD, 1);
+    zone.style.height = Math.round(ratio * ZONE_MAX_H) + 'px';
+    if (fill) fill.style.strokeDashoffset = (CIRC - ratio * CIRC) + '';
 
-  // Wheel
-  var wheelAccum = 0;
-  window.addEventListener('wheel', function(e) {
-    if (busy) { e.preventDefault(); return; }
-    wheelAccum += e.deltaY;
-    if (wheelAccum > 120 && atBottom() && nextUrl) {
-      e.preventDefault();
-      goTo(nextUrl, nextTitle, 'down');
-    } else if (wheelAccum < -120 && atTop() && prevUrl) {
-      e.preventDefault();
-      goTo(prevUrl, prevTitle, 'up');
+    if (progress > 0) {
+      zone.classList.add('revealing');
+    } else {
+      zone.classList.remove('revealing');
+      zone.classList.remove('ready');
     }
-    clearTimeout(window._wheelReset);
-    window._wheelReset = setTimeout(function() { wheelAccum = 0; }, 300);
+    if (ratio >= 1) zone.classList.add('ready');
+  }
+
+  /* ── Decay progressif ── */
+  function startDecay() {
+    clearTimeout(decayTimer);
+    decayTimer = setTimeout(function() {
+      var iv = setInterval(function() {
+        var changed = false;
+        if (accumNext > 0) { accumNext = Math.max(0, accumNext - 0.5); updateZone(zoneNext, fillNext, accumNext); changed = true; }
+        if (accumPrev > 0) { accumPrev = Math.max(0, accumPrev - 0.5); updateZone(zonePrev, fillPrev, accumPrev); changed = true; }
+        if (!changed) clearInterval(iv);
+      }, 40);
+    }, DECAY_MS);
+  }
+
+  /* ── Navigation avec overlay ── */
+  function goTo(direction) {
+    if (navigating) return;
+    var btn = direction === 'next' ? btnNext : btnPrev;
+    if (!btn) return;
+    navigating = true;
+
+    var span = btn.querySelector('.proj-nav-bar__title');
+    var title = span ? span.textContent.trim() : '';
+    var ctr = document.querySelector('.proj-nav-bar__counter');
+
+    if (transEl && transTitle) {
+      transTitle.textContent = title;
+      if (transCtr) transCtr.textContent = ctr ? ctr.textContent.trim() : '';
+      transEl.classList.add('active');
+    }
+    setTimeout(function() { window.location.href = btn.href; }, 550);
+  }
+
+  /* ─────────────────────────────────────
+     WHEEL (desktop — souris + trackpad)
+  ───────────────────────────────────── */
+  window.addEventListener('wheel', function(e) {
+    if (navigating || lightboxOpen()) return;
+
+    var dir = e.deltaY > 0 ? 1 : -1;
+
+    /* Changement de direction → reset l'autre sens */
+    if (dir !== lastDir) {
+      if (dir === 1)  { accumPrev = 0; updateZone(zonePrev, fillPrev, 0); }
+      if (dir === -1) { accumNext = 0; updateZone(zoneNext, fillNext, 0); }
+    }
+    lastDir = dir;
+
+    /* ▼ DOWN en bas de page → NEXT */
+    if (dir === 1 && atBottom() && btnNext) {
+      e.preventDefault();
+      accumNext = Math.min(THRESHOLD, accumNext + 1);
+      updateZone(zoneNext, fillNext, accumNext);
+      if (accumNext >= THRESHOLD) { goTo('next'); return; }
+      startDecay();
+    } else if (dir === 1 && accumNext > 0) {
+      accumNext = 0; updateZone(zoneNext, fillNext, 0);
+    }
+
+    /* ▲ UP en haut de page → PREV */
+    if (dir === -1 && atTop() && btnPrev) {
+      e.preventDefault();
+      accumPrev = Math.min(THRESHOLD, accumPrev + 1);
+      updateZone(zonePrev, fillPrev, accumPrev);
+      if (accumPrev >= THRESHOLD) { goTo('prev'); return; }
+      startDecay();
+    } else if (dir === -1 && accumPrev > 0) {
+      accumPrev = 0; updateZone(zonePrev, fillPrev, 0);
+    }
+
   }, { passive: false });
 
-  // Touch
-  window.addEventListener('touchstart', function(e) { touchStartY = e.touches[0].clientY; }, { passive: true });
-  window.addEventListener('touchend', function(e) {
-    var dy = touchStartY - e.changedTouches[0].clientY;
-    if (dy > 60 && atBottom()) goTo(nextUrl, nextTitle, 'down');
-    if (dy < -60 && atTop())   goTo(prevUrl, prevTitle, 'up');
+  /* ─────────────────────────────────────
+     SCROLL EVENT (scrollbar + tout moyen)
+     Quand on atteint un bord, afficher la zone
+     en mode "teaser" cliquable (40% du seuil)
+  ───────────────────────────────────── */
+  var scrollEdgeTimer = null;
+  var TEASER = Math.round(THRESHOLD * 0.4); /* niveau teaser = zone visible + cliquable */
+
+  window.addEventListener('scroll', function() {
+    if (navigating || lightboxOpen()) return;
+
+    /* En bas → montrer teaser next */
+    if (atBottom() && btnNext && accumNext < TEASER) {
+      clearTimeout(scrollEdgeTimer);
+      scrollEdgeTimer = setTimeout(function() {
+        if (atBottom() && accumNext < TEASER) {
+          accumNext = TEASER;
+          updateZone(zoneNext, fillNext, accumNext);
+          startDecay();
+        }
+      }, 150);
+    }
+
+    /* En haut → montrer teaser prev */
+    if (atTop() && btnPrev && accumPrev < TEASER) {
+      clearTimeout(scrollEdgeTimer);
+      scrollEdgeTimer = setTimeout(function() {
+        if (atTop() && accumPrev < TEASER) {
+          accumPrev = TEASER;
+          updateZone(zonePrev, fillPrev, accumPrev);
+          startDecay();
+        }
+      }, 150);
+    }
+
+    /* Si on quitte le bord, reset */
+    if (!atBottom() && accumNext > 0 && accumNext <= TEASER) {
+      accumNext = 0; updateZone(zoneNext, fillNext, 0);
+    }
+    if (!atTop() && accumPrev > 0 && accumPrev <= TEASER) {
+      accumPrev = 0; updateZone(zonePrev, fillPrev, 0);
+    }
   }, { passive: true });
 
-  // Clavier
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') goTo(nextUrl, nextTitle, 'down');
-    if (e.key === 'ArrowUp'   || e.key === 'ArrowLeft')  goTo(prevUrl, prevTitle, 'up');
-  });
+  /* ─────────────────────────────────────
+     ZONES CLIQUABLES — clic pour naviguer
+  ───────────────────────────────────── */
+  if (zoneNext) zoneNext.addEventListener('click', function() { goTo('next'); });
+  if (zonePrev) zonePrev.addEventListener('click', function() { goTo('prev'); });
+
+  /* ─────────────────────────────────────
+     TOUCH (mobile)
+  ───────────────────────────────────── */
+  var touchY = 0, touching = false;
+
+  document.addEventListener('touchstart', function(e) {
+    if (lightboxOpen()) return;
+    touchY = e.touches[0].clientY;
+    touching = true;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', function(e) {
+    if (!touching || navigating || lightboxOpen()) return;
+
+    var dy = touchY - e.touches[0].clientY;
+    touchY = e.touches[0].clientY;
+
+    if (dy > 2 && atBottom() && btnNext) {
+      accumNext = Math.min(THRESHOLD, accumNext + 0.4);
+      updateZone(zoneNext, fillNext, accumNext);
+      if (accumNext >= THRESHOLD) goTo('next');
+    }
+    if (dy < -2 && atTop() && btnPrev) {
+      accumPrev = Math.min(THRESHOLD, accumPrev + 0.4);
+      updateZone(zonePrev, fillPrev, accumPrev);
+      if (accumPrev >= THRESHOLD) goTo('prev');
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchend', function() {
+    touching = false;
+    startDecay();
+  }, { passive: true });
+
+  /* ─────────────────────────────────────
+     DOTS — clic avec transition
+  ───────────────────────────────────── */
+  if (dots) {
+    var dotEls = dots.querySelectorAll('.scroll-nav-dot');
+    for (var i = 0; i < dotEls.length; i++) {
+      (function(dot) {
+        dot.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation(); /* empêche main.js page-transition de capturer */
+          if (dot.classList.contains('scroll-nav-dot--active')) return;
+          navigating = true;
+          var tip = dot.querySelector('.scroll-nav-dot__tip');
+          if (transEl && transTitle) {
+            transTitle.textContent = tip ? tip.textContent.trim() : '';
+            if (transCtr) transCtr.textContent = '';
+            transEl.classList.add('active');
+          }
+          setTimeout(function() { window.location.href = dot.href; }, 550);
+        });
+      })(dotEls[i]);
+    }
+  }
+
 })();
 </script>
 

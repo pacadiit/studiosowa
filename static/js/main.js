@@ -195,10 +195,11 @@ function revealPage() {
     if (!link) return;
 
     const href = link.getAttribute('href');
-    // Skip external, anchor, admin links
+    // Skip external, anchor, admin links, scroll-nav dots
     if (!href || href.startsWith('#') || href.startsWith('http') ||
         href.startsWith('mailto') || href.startsWith('tel') ||
-        href.includes('/admin') || link.target === '_blank') return;
+        href.includes('/admin') || link.target === '_blank' ||
+        link.closest('.scroll-nav-dots') || link.closest('.proj-nav-bar')) return;
 
     e.preventDefault();
     overlay.classList.remove('leaving');
