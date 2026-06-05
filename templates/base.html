@@ -32,7 +32,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?v=20260605b">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?v=20260605d">
   <style>
     body { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; }
   </style>
@@ -62,8 +62,8 @@
 
   <ul class="nav-links" role="list">
     <li>
-      <a href="{{ url_for('index') }}"
-         class="{% if request.endpoint == 'index' %}active{% endif %}">
+      <a href="{{ url_for('studio_page') }}"
+         class="{% if request.endpoint == 'studio_page' %}active{% endif %}">
         Studio
       </a>
     </li>
@@ -109,7 +109,7 @@
 {% endblock %}
 
 <!-- Index projets — bas gauche fixe (pages projet uniquement) -->
-{% if nav_projects and request.endpoint not in ['index', 'studio', 'contact'] %}
+{% if nav_projects and request.endpoint not in ['index', 'studio_page', 'contact'] %}
 <div class="proj-index" id="projIndex">
   <button class="proj-index__trigger" aria-haspopup="true" aria-expanded="false" id="projIndexBtn">
     <span class="lang-fr">Index</span>

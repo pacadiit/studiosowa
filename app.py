@@ -334,6 +334,18 @@ def inject_lang():
 
 @app.route('/')
 def index():
+    projects = (Project.query
+                .filter_by(published=True)
+                .order_by(Project.sort_order, Project.created_at.desc())
+                .all())
+    # Only projects with at least one image
+    projects_with_img = [p for p in projects if p.featured_image]
+    return render_template('home.html', projects=projects_with_img)
+
+
+@app.route('/studio')
+@app.route('/agence')
+def studio_page():
     return render_template('studio.html')
 
 
@@ -368,11 +380,6 @@ def project_detail(slug):
     return render_template('project.html', project=project,
                            prev_project=prev_project, next_project=next_project,
                            proj_index=idx + 1, proj_total=len(all_projects))
-
-
-@app.route('/studio')
-def studio():
-    return redirect('/', 301)
 
 
 @app.route('/contact', methods=['GET', 'POST'])

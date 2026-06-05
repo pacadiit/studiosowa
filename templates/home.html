@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block title %}StudioSowa — Architecture{% endblock %}
+{% block extra_head %}
+<style>body.home-body footer { display: none; }</style>
+{% endblock %}
+
+{% block content %}
+
+{% if projects %}
+<div class="home-slideshow" id="homeSlideshow">
+
+  {% for project in projects %}
+  <div class="home-slide {% if loop.first %}active{% endif %}"
+       data-index="{{ loop.index0 }}">
+    <div class="home-slide__img"
+         style="background-image: url('{{ image_url(project.featured_image) }}')">
+    </div>
+    <a href="{{ url_for('project_detail', slug=project.slug) }}" class="home-slide__link">
+      <div class="home-slide__info">
+        <h2 class="home-slide__title">
+          <span class="lang-fr">{{ project.title_fr }}</span>
+          <span class="lang-en">{{ project.title_en }}</span>
+        </h2>
+        {% if project.location %}
+        <p class="home-slide__location">{{ project.location }}{% if project.year %} — {{ project.year }}{% endif %}</p>
+        {% endif %}
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+
+  <!-- Barres de progression style stories — une par projet -->
+  <div class="home-bars" id="homeBars">
+    {% for project in projects %}
+    <div class="home-bar" data-index="{{ loop.index0 }}">
+      <div class="home-bar__fill"></div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Hint "prochain projet" -->
+  <div class="home-next-hint" id="homeNextHint">
+    <span class="home-next-hint__label">
+      <span class="lang-fr">Suivant</span>
+      <span class="lang-en">Next</span>
+    </span>
+    <span class="home-next-hint__name" id="homeNextName"></span>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </div>
+
+</div>
+{% else %}
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--black);color:var(--white);">
+  <p style="font-size:13px;letter-spacing:0.12em;text-transform:uppercase;opacity:0.5;">
+    <span class="lang-fr">Aucun projet publié.</span>
+    <span class="lang-en">No projects published yet.</span>
+  </p>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function() {
+  var slides = document.querySelectorAll('.home-slide');
+  var bars   = document.querySelectorAll('.home-bar');
+  var hint   = document.getElementById('homeNextHint');
+  var hintName = document.getElementById('homeNextName');
+  if (!slides.length) return;
+
+  var total   = slides.length;
+  var current = 0;
+  var DURATION = 4000;       /* ms par slide */
+  var FIRST_DURATION = 2200; /* première slide plus courte — montrer qu'il y en a d'autres */
+  var timer   = null;
+  var paused  = false;
+
+  /* Récupérer tous les titres pour le hint */
+  var titles = [];
+  for (var s = 0; s < slides.length; s++) {
+    var t = slides[s].querySelector('.home-slide__title');
+    titles.push(t ? t.textContent.trim() : '');
+  }
+
+  document.body.classList.add('home-body');
+
+  /* ── Changer de slide ── */
+  function goToSlide(idx) {
+    if (idx === current && total > 1) return;
+
+    /* Sortir l'ancienne */
+    slides[current].classList.remove('active');
+    slides[current].classList.add('leaving');
+    bars[current].classList.remove('active');
+    bars[current].classList.add('done');
+
+    var prev = current;
+    current = idx;
+
+    /* Entrer la nouvelle */
+    slides[current].classList.add('active');
+    slides[current].classList.remove('leaving');
+
+    setTimeout(function() { slides[prev].classList.remove('leaving'); }, 1000);
+
+    /* Reset toutes les barres si on boucle */
+    if (current === 0) {
+      for (var b = 0; b < bars.length; b++) bars[b].classList.remove('done');
+    }
+
+    updateBars();
+    updateHint();
+  }
+
+  function nextSlide() { goToSlide((current + 1) % total); }
+  function prevSlide() {
+    /* En arrière : reset les barres à partir de la destination */
+    var dest = (current - 1 + total) % total;
+    for (var b = dest + 1; b < bars.length; b++) bars[b].classList.remove('done');
+    bars[current].classList.remove('done', 'active');
+    goToSlide(dest);
+  }
+
+  /* ── Barres type stories ── */
+  function updateBars() {
+    for (var b = 0; b < bars.length; b++) {
+      bars[b].classList.remove('active');
+      var fill = bars[b].querySelector('.home-bar__fill');
+      if (b < current) {
+        bars[b].classList.add('done');
+        if (fill) { fill.style.transition = 'none'; fill.style.width = '100%'; }
+      } else if (b === current) {
+        bars[b].classList.add('active');
+        if (fill) {
+          fill.style.transition = 'none';
+          fill.style.width = '0%';
+          void fill.offsetWidth;
+          var dur = (current === 0 && !timer) ? FIRST_DURATION : DURATION;
+          fill.style.transition = 'width ' + dur + 'ms linear';
+          fill.style.width = '100%';
+        }
+      } else {
+        if (fill) { fill.style.transition = 'none'; fill.style.width = '0%'; }
+      }
+    }
+  }
+
+  /* ── Hint "prochain projet" ── */
+  function updateHint() {
+    if (!hint || !hintName) return;
+    var nextIdx = (current + 1) % total;
+    hintName.textContent = titles[nextIdx];
+    /* Flash le hint brièvement 1.5s après le changement */
+    hint.classList.remove('show');
+    setTimeout(function() {
+      if (!paused) hint.classList.add('show');
+    }, (current === 0 && !timer) ? 1200 : 2000);
+    setTimeout(function() {
+      hint.classList.remove('show');
+    }, (current === 0 && !timer) ? 2800 : 3500);
+  }
+
+  /* ── Autoplay ── */
+  function startAutoplay(firstRun) {
+    stopAutoplay();
+    var dur = firstRun ? FIRST_DURATION : DURATION;
+    updateBars();
+    timer = setTimeout(function tick() {
+      if (!paused) nextSlide();
+      timer = setTimeout(tick, DURATION);
+    }, dur);
+  }
+
+  function stopAutoplay() {
+    clearTimeout(timer);
+    timer = null;
+  }
+
+  /* ── Keyboard ── */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { nextSlide(); startAutoplay(false); }
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   { prevSlide(); startAutoplay(false); }
+  });
+
+  /* ── Wheel → change slide ── */
+  var wheelLock = false;
+  window.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    if (wheelLock) return;
+    wheelLock = true;
+    setTimeout(function() { wheelLock = false; }, 900);
+
+    if (e.deltaY > 0) nextSlide(); else prevSlide();
+    startAutoplay(false);
+  }, { passive: false });
+
+  /* ── Touch swipe ── */
+  var touchY = 0;
+  document.addEventListener('touchstart', function(e) { touchY = e.touches[0].clientY; }, { passive: true });
+  document.addEventListener('touchend', function(e) {
+    var dy = touchY - e.changedTouches[0].clientY;
+    if (Math.abs(dy) > 50) {
+      if (dy > 0) nextSlide(); else prevSlide();
+      startAutoplay(false);
+    }
+  }, { passive: true });
+
+  /* ── Hint cliquable → next ── */
+  if (hint) hint.addEventListener('click', function() { nextSlide(); startAutoplay(false); });
+
+  /* ── Pause au survol du lien (pour cliquer tranquille) ── */
+  var links = document.querySelectorAll('.home-slide__link');
+  for (var i = 0; i < links.length; i++) {
+    links[i].addEventListener('mouseenter', function() { paused = true; });
+    links[i].addEventListener('mouseleave', function() { paused = false; });
+  }
+
+  /* ── Init ── */
+  updateHint();
+  startAutoplay(true);
+
+})();
+</script>
+{% endblock %}

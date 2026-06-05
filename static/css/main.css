@@ -2282,3 +2282,208 @@ body[data-lang="en"] span.lang-en { display: inline; }
   .scroll-nav-dots { display: none; }
   .scroll-nav-zone--next { bottom: 0; }
 }
+
+/* ---------------------------------------------------------
+   16. Homepage — Fullscreen Slideshow
+   --------------------------------------------------------- */
+
+.home-slideshow {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--black);
+}
+
+body.home-body { overflow: hidden; }
+
+/* ── Slides ── */
+.home-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.home-slide.active {
+  opacity: 1;
+  pointer-events: all;
+  z-index: 3;
+  animation: homeSlideIn 0.7s var(--ease-out) both;
+}
+
+.home-slide.leaving {
+  z-index: 2;
+  animation: homeSlideOut 0.7s var(--ease-in) both;
+}
+
+@keyframes homeSlideIn {
+  from { opacity: 0; transform: scale(1.03); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes homeSlideOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* Image de fond */
+.home-slide__img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: brightness(0.55);
+  transform: scale(1.06);
+  transition: transform 5s linear;
+}
+
+.home-slide.active .home-slide__img {
+  transform: scale(1);
+}
+
+/* Lien cliquable plein écran */
+.home-slide__link {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 60px 72px;
+}
+
+/* ── Infos projet ── */
+.home-slide__info {
+  width: 100%;
+}
+
+.home-slide__title {
+  font-size: clamp(26px, 4.5vw, 60px);
+  font-weight: 200;
+  letter-spacing: 0.02em;
+  color: var(--white);
+  line-height: 1.1;
+  transform: translateY(24px);
+  opacity: 0;
+  transition: transform 0.65s var(--ease-out) 0.15s, opacity 0.65s var(--ease-out) 0.15s;
+}
+
+.home-slide.active .home-slide__title {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.home-slide__location {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(248, 247, 245, 0.45);
+  margin-top: 10px;
+  transform: translateY(12px);
+  opacity: 0;
+  transition: transform 0.5s var(--ease-out) 0.3s, opacity 0.5s var(--ease-out) 0.3s;
+}
+
+.home-slide.active .home-slide__location {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ── Barres type stories (bas de l'écran) ── */
+.home-bars {
+  position: fixed;
+  bottom: 28px;
+  left: 60px;
+  right: 60px;
+  display: flex;
+  gap: 4px;
+  z-index: 20;
+}
+
+.home-bar {
+  flex: 1;
+  height: 2px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 1px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+
+.home-bar::before {
+  content: '';
+  position: absolute;
+  inset: -8px 0;
+}
+
+.home-bar__fill {
+  height: 100%;
+  width: 0%;
+  background: var(--white);
+  border-radius: 1px;
+}
+
+.home-bar.done .home-bar__fill {
+  width: 100%;
+}
+
+/* ── Hint "prochain projet" (bas droite) ── */
+.home-next-hint {
+  position: fixed;
+  bottom: 48px;
+  right: 60px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 20;
+  color: rgba(248,247,245,0.45);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateX(8px);
+  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out), color 0.2s;
+  pointer-events: none;
+}
+
+.home-next-hint.show {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
+}
+
+.home-next-hint:hover {
+  color: var(--white);
+}
+
+.home-next-hint__name {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-next-hint svg {
+  opacity: 0.5;
+  animation: hintArrow 1.2s var(--ease-out) infinite;
+}
+
+@keyframes hintArrow {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(4px); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .home-slide__link { padding: 0 32px 64px; }
+  .home-bars { left: 32px; right: 32px; bottom: 20px; }
+  .home-next-hint { right: 32px; bottom: 38px; }
+}
+
+@media (max-width: 600px) {
+  .home-slide__link { padding: 0 20px 56px; }
+  .home-bars { left: 20px; right: 20px; bottom: 16px; }
+  .home-next-hint { right: 20px; bottom: 32px; font-size: 9px; }
+  .home-slide__title { font-size: 24px; }
+}
