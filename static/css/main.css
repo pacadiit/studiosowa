@@ -1814,23 +1814,51 @@ body[data-lang="en"] span.lang-en { display: inline; }
 
   /* Studio — 1 colonne */
   .agence-hero-block {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
+    display: flex;
+    flex-direction: column;
   }
-  .agence-hero-block .agence-row__title:nth-child(1) { grid-column: 1; grid-row: auto; }
-  .agence-hero-block .agence-row__text--top          { grid-column: 1; grid-row: auto; padding-bottom: 0; }
-  .agence-hero-block .agence-row__title:nth-child(3) { grid-column: 1; grid-row: auto; padding-top: 32px; }
-  .agence-hero-block .agence-row__text--bottom       { grid-column: 1; grid-row: auto; padding-top: 16px; }
+  .agence-hero-block .agence-row__title:nth-child(1) { padding-top: calc(var(--nav-h) + 32px); }
+  .agence-hero-block .agence-row__text--top          { padding-top: 0; padding-bottom: 0; }
+  .agence-hero-block .agence-row__title:nth-child(3) { padding-top: 32px; }
+  .agence-hero-block .agence-row__text--bottom       { padding-top: 8px; padding-bottom: 32px; }
+
+  /* Photo Youssou — en mode flux, plus en absolute */
   .agence-hero-photo {
-    grid-column: 1;
-    grid-row: auto;
-    min-height: 55vw;
+    position: relative;
+    min-height: auto;
+    padding-top: 0;
+    padding-right: 0;
+    order: 2; /* photo entre les 2 sections texte */
   }
+  .agence-hero-photo .agence-photo {
+    position: relative;
+    top: auto; bottom: auto; left: auto; right: auto;
+    aspect-ratio: 3 / 4;
+  }
+  .agence-hero-photo .agence-photo img {
+    object-position: center 20%; /* cadrer le visage */
+  }
+
+  /* Réordonner : Studio titre → texte → PHOTO → Youssou titre → texte */
+  .agence-hero-block .agence-row__title:nth-child(1) { order: 0; }
+  .agence-hero-block .agence-row__text--top           { order: 1; }
+  .agence-hero-block .agence-row__title:nth-child(3) { order: 3; }
+  .agence-hero-block .agence-row__text--bottom        { order: 4; }
 
   .agence-row { grid-template-columns: 1fr; min-height: auto; }
   .agence-row__title { padding: 40px 24px 12px; }
-  .agence-row__text  { padding: 0 24px 48px; }
-  .agence-row__photo { min-height: 60vw; }
+  .agence-row__text  { padding: 0 24px 48px; text-align: left; }
+  .agence-row__photo {
+    position: relative;
+    min-height: auto;
+    padding-right: 0;
+    padding-top: 0;
+  }
+  .agence-row__photo .agence-photo {
+    position: relative;
+    top: auto; right: auto; bottom: auto; left: auto;
+    aspect-ratio: 16 / 10;
+  }
 
   .agence-contact-footer { padding: 40px 24px; }
 
@@ -1873,11 +1901,13 @@ body[data-lang="en"] span.lang-en { display: inline; }
   .proj-title { font-size: 22px; }
 
   /* Studio */
-  .agence-row__title { padding: 32px 16px 8px; }
-  .agence-row__text  { padding: 0 16px 36px; }
-  .agence-hero-photo { min-height: 70vw; }
+  .agence-row__title { padding: 28px 16px 8px; }
+  .agence-row__text  { padding: 0 16px 32px; }
+  .agence-hero-photo .agence-photo { aspect-ratio: 3 / 4; }
   .agence-bigtitle { font-size: 18px; }
   .agence-contact-footer { padding: 32px 16px; }
+  .agence-hero-block .agence-row__title:nth-child(1) { padding: calc(var(--nav-h) + 20px) 16px 8px; }
+  .agence-hero-block .agence-row__text--bottom { padding-bottom: 24px; }
 
   /* Contact */
   .contact-info,
