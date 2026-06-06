@@ -19,12 +19,12 @@
     </div>
     <div class="agence-row__text agence-row__text--top">
       <div class="agence-body reveal">
-        <p class="lang-fr">STUDIOSOWA est une agence d'architecture fondée par Youssou SOW, architecte et urbaniste.</p>
-        <p class="lang-en">STUDIOSOWA is an architecture studio founded by Youssou SOW, architect and urban designer.</p>
+        <p class="lang-fr">{{ sc('studio_intro_fr', "STUDIOSOWA est une agence d'architecture fondée par Youssou SOW, architecte et urbaniste.") }}</p>
+        <p class="lang-en">{{ sc('studio_intro_en', 'STUDIOSOWA is an architecture studio founded by Youssou SOW, architect and urban designer.') }}</p>
       </div>
       <div class="agence-body reveal">
-        <p class="lang-fr">Nous sommes spécialisés dans la conception d'espaces qui s'ancrent dans leur contexte géographique, climatique et culturel. Notre objectif est de produire une architecture de qualité, sobre dans ses moyens, généreuse dans ses usages — une architecture qui dure.</p>
-        <p class="lang-en">We specialise in designing spaces rooted in their geographic, climatic and cultural context. Our goal is to produce quality architecture — measured in its means, generous in its uses — architecture that endures.</p>
+        <p class="lang-fr">{{ sc('studio_detail_fr', "Nous sommes spécialisés dans la conception d'espaces qui s'ancrent dans leur contexte géographique, climatique et culturel. Notre objectif est de produire une architecture de qualité, sobre dans ses moyens, généreuse dans ses usages — une architecture qui dure.") }}</p>
+        <p class="lang-en">{{ sc('studio_detail_en', 'We specialise in designing spaces rooted in their geographic, climatic and cultural context. Our goal is to produce quality architecture — measured in its means, generous in its uses — architecture that endures.') }}</p>
       </div>
     </div>
 
@@ -34,19 +34,33 @@
     </div>
     <div class="agence-row__text agence-row__text--bottom">
       <div class="agence-credentials reveal">
-        <p class="lang-fr">Architecte DPLG</p>
-        <p class="lang-en">Licensed Architect</p>
+        <p class="lang-fr">{{ sc('studio_founder_title_fr', 'Architecte DPLG') }}</p>
+        <p class="lang-en">{{ sc('studio_founder_title_en', 'Licensed Architect') }}</p>
       </div>
       <div class="agence-credentials reveal">
-        <p class="lang-fr">Fondateur &amp; Architecte Principal</p>
-        <p class="lang-en">Founder &amp; Principal Architect</p>
+        <p class="lang-fr">{{ sc('studio_founder_role_fr', 'Fondateur &amp; Architecte Principal') }}</p>
+        <p class="lang-en">{{ sc('studio_founder_role_en', 'Founder &amp; Principal Architect') }}</p>
       </div>
       <div class="agence-quote reveal">
-        <p class="lang-fr">"Originaire du Sénégal, j'ai entrepris des études d'architecture animé par une conviction profonde : l'espace construit façonne les modes de vie et les relations humaines.</p>
-        <p class="lang-fr">Ma passion pour l'architecture est indissociable de mon attachement au contexte, à la lumière et aux matériaux. Chaque projet est pour moi une opportunité de dialoguer avec un lieu, d'en révéler le potentiel et d'y inscrire une architecture qui serve vraiment ses habitants.</p>
-        <p class="lang-fr">J'ai décidé de fonder StudioSowa avec l'ambition de concevoir des espaces qui ne se contentent pas d'être beaux, mais qui soient vécus, habités, aimés — une architecture ancrée dans son temps et dans son territoire."</p>
-        <p class="lang-en">"My passion for architecture is inseparable from my attachment to context, light and materials. Every project is an opportunity to dialogue with a place, reveal its potential, and create architecture that truly serves its inhabitants.</p>
-        <p class="lang-en">I founded StudioSowa with the ambition to design spaces that don't merely look beautiful, but that are lived in, inhabited, loved — architecture rooted in its time and its territory."</p>
+        {% set quote_fr = sc('studio_founder_quote_fr') %}
+        {% if quote_fr %}
+          {% for para in quote_fr.split('\n') %}
+            {% if para.strip() %}<p class="lang-fr">{{ para.strip() }}</p>{% endif %}
+          {% endfor %}
+        {% else %}
+          <p class="lang-fr">"Originaire du Sénégal, j'ai entrepris des études d'architecture animé par une conviction profonde : l'espace construit façonne les modes de vie et les relations humaines.</p>
+          <p class="lang-fr">Ma passion pour l'architecture est indissociable de mon attachement au contexte, à la lumière et aux matériaux. Chaque projet est pour moi une opportunité de dialoguer avec un lieu, d'en révéler le potentiel et d'y inscrire une architecture qui serve vraiment ses habitants.</p>
+          <p class="lang-fr">J'ai décidé de fonder StudioSowa avec l'ambition de concevoir des espaces qui ne se contentent pas d'être beaux, mais qui soient vécus, habités, aimés — une architecture ancrée dans son temps et dans son territoire."</p>
+        {% endif %}
+        {% set quote_en = sc('studio_founder_quote_en') %}
+        {% if quote_en %}
+          {% for para in quote_en.split('\n') %}
+            {% if para.strip() %}<p class="lang-en">{{ para.strip() }}</p>{% endif %}
+          {% endfor %}
+        {% else %}
+          <p class="lang-en">"My passion for architecture is inseparable from my attachment to context, light and materials. Every project is an opportunity to dialogue with a place, reveal its potential, and create architecture that truly serves its inhabitants.</p>
+          <p class="lang-en">I founded StudioSowa with the ambition to design spaces that don't merely look beautiful, but that are lived in, inhabited, loved — architecture rooted in its time and its territory."</p>
+        {% endif %}
       </div>
     </div>
 
@@ -73,22 +87,22 @@
     </div>
     <div class="agence-row__text">
       <div class="agence-step reveal">
-        <h3 class="agence-step__num lang-fr">01 / Comprendre</h3>
-        <h3 class="agence-step__num lang-en">01 / Understand</h3>
-        <p class="lang-fr">Chaque collaboration commence par une écoute approfondie — des usagers, du lieu, du programme. Nous définissons précisément les intentions spatiales, les enjeux architecturaux et les désirs du maître d'ouvrage. S'imprégner de ces informations est une étape indispensable pour concevoir juste.</p>
-        <p class="lang-en">Every collaboration begins with deep listening — to users, to place, to programme. We define precisely the spatial intentions, architectural challenges and client aspirations. Absorbing this information is an essential step toward thoughtful design.</p>
+        <h3 class="agence-step__num lang-fr">{{ sc('studio_method_1_title_fr', '01 / Comprendre') }}</h3>
+        <h3 class="agence-step__num lang-en">{{ sc('studio_method_1_title_en', '01 / Understand') }}</h3>
+        <p class="lang-fr">{{ sc('studio_method_1_text_fr', "Chaque collaboration commence par une écoute approfondie — des usagers, du lieu, du programme. Nous définissons précisément les intentions spatiales, les enjeux architecturaux et les désirs du maître d'ouvrage. S'imprégner de ces informations est une étape indispensable pour concevoir juste.") }}</p>
+        <p class="lang-en">{{ sc('studio_method_1_text_en', 'Every collaboration begins with deep listening — to users, to place, to programme. We define precisely the spatial intentions, architectural challenges and client aspirations. Absorbing this information is an essential step toward thoughtful design.') }}</p>
       </div>
       <div class="agence-step reveal">
-        <h3 class="agence-step__num lang-fr">02 / Concevoir</h3>
-        <h3 class="agence-step__num lang-en">02 / Design</h3>
-        <p class="lang-fr">De l'esquisse à l'avant-projet, nous développons des propositions architecturales ancrées dans le site et répondant aux besoins réels. Chaque espace est pensé pour sa qualité de vie, sa luminosité et son insertion dans le paysage.</p>
-        <p class="lang-en">From sketch to schematic design, we develop architectural proposals rooted in the site and responding to real needs. Every space is considered for its quality of life, light and landscape integration.</p>
+        <h3 class="agence-step__num lang-fr">{{ sc('studio_method_2_title_fr', '02 / Concevoir') }}</h3>
+        <h3 class="agence-step__num lang-en">{{ sc('studio_method_2_title_en', '02 / Design') }}</h3>
+        <p class="lang-fr">{{ sc('studio_method_2_text_fr', "De l'esquisse à l'avant-projet, nous développons des propositions architecturales ancrées dans le site et répondant aux besoins réels. Chaque espace est pensé pour sa qualité de vie, sa luminosité et son insertion dans le paysage.") }}</p>
+        <p class="lang-en">{{ sc('studio_method_2_text_en', 'From sketch to schematic design, we develop architectural proposals rooted in the site and responding to real needs. Every space is considered for its quality of life, light and landscape integration.') }}</p>
       </div>
       <div class="agence-step reveal">
-        <h3 class="agence-step__num lang-fr">03 / Réaliser</h3>
-        <h3 class="agence-step__num lang-en">03 / Build</h3>
-        <p class="lang-fr">Nous accompagnons nos clients jusqu'à la livraison, avec rigueur et transparence. Notre méthode repose sur un dialogue constant avec les artisans pour garantir une exécution fidèle à nos exigences.</p>
-        <p class="lang-en">We accompany our clients through to handover with rigour and transparency. Our method relies on constant dialogue with craftspeople to ensure execution faithful to our standards.</p>
+        <h3 class="agence-step__num lang-fr">{{ sc('studio_method_3_title_fr', '03 / Réaliser') }}</h3>
+        <h3 class="agence-step__num lang-en">{{ sc('studio_method_3_title_en', '03 / Build') }}</h3>
+        <p class="lang-fr">{{ sc('studio_method_3_text_fr', "Nous accompagnons nos clients jusqu'à la livraison, avec rigueur et transparence. Notre méthode repose sur un dialogue constant avec les artisans pour garantir une exécution fidèle à nos exigences.") }}</p>
+        <p class="lang-en">{{ sc('studio_method_3_text_en', 'We accompany our clients through to handover with rigour and transparency. Our method relies on constant dialogue with craftspeople to ensure execution faithful to our standards.') }}</p>
       </div>
     </div>
     <div class="agence-row__photo">
@@ -112,22 +126,22 @@
     </div>
     <div class="agence-row__text">
       <div class="agence-service reveal">
-        <h3 class="agence-service__name lang-fr">Conception architecturale</h3>
-        <h3 class="agence-service__name lang-en">Architectural design</h3>
-        <p class="lang-fr">De la villa privée au grand équipement public, nous concevons des projets ancrés dans leur contexte, alliant esthétique intemporelle et performance.</p>
-        <p class="lang-en">From the private villa to major public facilities, we design projects rooted in context, balancing timeless aesthetics and performance.</p>
+        <h3 class="agence-service__name lang-fr">{{ sc('studio_service_1_name_fr', 'Conception architecturale') }}</h3>
+        <h3 class="agence-service__name lang-en">{{ sc('studio_service_1_name_en', 'Architectural design') }}</h3>
+        <p class="lang-fr">{{ sc('studio_service_1_text_fr', "De la villa privée au grand équipement public, nous concevons des projets ancrés dans leur contexte, alliant esthétique intemporelle et performance.") }}</p>
+        <p class="lang-en">{{ sc('studio_service_1_text_en', 'From the private villa to major public facilities, we design projects rooted in context, balancing timeless aesthetics and performance.') }}</p>
       </div>
       <div class="agence-service reveal">
-        <h3 class="agence-service__name lang-fr">Maîtrise d'œuvre</h3>
-        <h3 class="agence-service__name lang-en">Project management</h3>
-        <p class="lang-fr">Nous assurons le suivi complet de chantier, de la consultation des entreprises à la livraison, garantissant le respect du projet, des délais et du budget.</p>
-        <p class="lang-en">We oversee the full construction process, from contractor selection to handover, ensuring respect for the design, schedule and budget.</p>
+        <h3 class="agence-service__name lang-fr">{{ sc('studio_service_2_name_fr', "Maîtrise d'œuvre") }}</h3>
+        <h3 class="agence-service__name lang-en">{{ sc('studio_service_2_name_en', 'Project management') }}</h3>
+        <p class="lang-fr">{{ sc('studio_service_2_text_fr', "Nous assurons le suivi complet de chantier, de la consultation des entreprises à la livraison, garantissant le respect du projet, des délais et du budget.") }}</p>
+        <p class="lang-en">{{ sc('studio_service_2_text_en', 'We oversee the full construction process, from contractor selection to handover, ensuring respect for the design, schedule and budget.') }}</p>
       </div>
       <div class="agence-service reveal">
-        <h3 class="agence-service__name lang-fr">Réhabilitation &amp; Patrimoine</h3>
-        <h3 class="agence-service__name lang-en">Renovation &amp; Heritage</h3>
-        <p class="lang-fr">Nous intervenons sur des bâtiments existants avec une approche sensible, visant à révéler le potentiel architectural tout en répondant aux exigences contemporaines.</p>
-        <p class="lang-en">We work on existing buildings with a sensitive approach, revealing their architectural potential while meeting contemporary requirements.</p>
+        <h3 class="agence-service__name lang-fr">{{ sc('studio_service_3_name_fr', 'Réhabilitation &amp; Patrimoine') }}</h3>
+        <h3 class="agence-service__name lang-en">{{ sc('studio_service_3_name_en', 'Renovation &amp; Heritage') }}</h3>
+        <p class="lang-fr">{{ sc('studio_service_3_text_fr', "Nous intervenons sur des bâtiments existants avec une approche sensible, visant à révéler le potentiel architectural tout en répondant aux exigences contemporaines.") }}</p>
+        <p class="lang-en">{{ sc('studio_service_3_text_en', 'We work on existing buildings with a sensitive approach, revealing their architectural potential while meeting contemporary requirements.') }}</p>
       </div>
     </div>
     <div class="agence-row__photo">
@@ -142,22 +156,34 @@
   <!-- ══════════════════════════════════════════════════
        CONTACT
   ══════════════════════════════════════════════════ -->
+  {% set c_email = sc('contact_email', 'contact@studiosowa.com') %}
+  {% set c_address_fr = sc('contact_address', 'Dakar, Sénégal') %}
+  {% set c_insta = sc('contact_instagram', 'https://www.instagram.com/studio.sowa?igsh=MWVkbXhtbTRuM2l3eQ==') %}
+  {% set c_fb = sc('contact_facebook', 'https://www.facebook.com/studiosowa/') %}
+  {% set c_li = sc('contact_linkedin', 'https://www.linkedin.com/company/studiosowa') %}
+
   <section class="agence-contact-footer reveal">
-    <p class="agence-contact-footer__address lang-fr">Dakar, Sénégal</p>
-    <p class="agence-contact-footer__address lang-en">Dakar, Senegal</p>
+    <p class="agence-contact-footer__address lang-fr">{{ c_address_fr }}</p>
+    <p class="agence-contact-footer__address lang-en">{{ c_address_fr }}</p>
     <p class="agence-contact-footer__email">
-      <a href="mailto:contact@studiosowa.com">contact@studiosowa.com</a>
+      <a href="mailto:{{ c_email }}">{{ c_email }}</a>
     </p>
     <div class="agence-contact-footer__social">
-      <a href="https://www.instagram.com/studio.sowa?igsh=MWVkbXhtbTRuM2l3eQ==" target="_blank" rel="noopener" aria-label="Instagram">
+      {% if c_insta %}
+      <a href="{{ c_insta }}" target="_blank" rel="noopener" aria-label="Instagram">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
       </a>
-      <a href="https://www.facebook.com/studiosowa/" target="_blank" rel="noopener" aria-label="Facebook">
+      {% endif %}
+      {% if c_fb %}
+      <a href="{{ c_fb }}" target="_blank" rel="noopener" aria-label="Facebook">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
       </a>
-      <a href="https://www.linkedin.com/company/studiosowa" target="_blank" rel="noopener" aria-label="LinkedIn">
+      {% endif %}
+      {% if c_li %}
+      <a href="{{ c_li }}" target="_blank" rel="noopener" aria-label="LinkedIn">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
       </a>
+      {% endif %}
     </div>
   </section>
 

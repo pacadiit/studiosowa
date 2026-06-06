@@ -92,6 +92,29 @@ def redirect_www():
 # Models
 # ---------------------------------------------------------------------------
 
+class SiteContent(db.Model):
+    """Key-value store for editable page content (Studio, Contact, etc.)."""
+    __tablename__ = 'site_content'
+
+    id    = db.Column(db.Integer, primary_key=True)
+    key   = db.Column(db.String(100), unique=True, nullable=False)
+    value = db.Column(db.Text, default='')
+
+    @staticmethod
+    def get(key, default=''):
+        entry = SiteContent.query.filter_by(key=key).first()
+        return entry.value if entry and entry.value else default
+
+    @staticmethod
+    def set(key, value):
+        entry = SiteContent.query.filter_by(key=key).first()
+        if entry:
+            entry.value = value
+        else:
+            entry = SiteContent(key=key, value=value)
+            db.session.add(entry)
+
+
 class Project(db.Model):
     __tablename__ = 'projects'
 
@@ -191,8 +214,9 @@ def image_url(filename):
     return url_for('static', filename=f'uploads/{filename}')
 
 
-# Rendre image_url accessible dans tous les templates
+# Rendre image_url et sc (site content) accessibles dans tous les templates
 app.jinja_env.globals['image_url'] = image_url
+app.jinja_env.globals['sc'] = lambda key, default='': SiteContent.get(key, default)
 
 
 def save_image(file):
@@ -677,6 +701,104 @@ def admin_upload_image(project_id):
         'filename': filename,
         'url': image_url(filename),
     })
+
+
+# ---------------------------------------------------------------------------
+# ADMIN — Édition contenu pages (Studio / Contact)
+# ---------------------------------------------------------------------------
+
+# Clés de contenu pour chaque page
+STUDIO_CONTENT_KEYS = [
+    # Section intro
+    ('studio_intro_fr',        'Studio — Texte d\'introduction (FR)'),
+    ('studio_intro_en',        'Studio — Introduction text (EN)'),
+    ('studio_detail_fr',       'Studio — Description détaillée (FR)'),
+    ('studio_detail_en',       'Studio — Detailed description (EN)'),
+    # Fondateur
+    ('studio_founder_title_fr', 'Fondateur — Titre/Credentials (FR)'),
+    ('studio_founder_title_en', 'Fondateur — Title/Credentials (EN)'),
+    ('studio_founder_role_fr',  'Fondateur — Rôle (FR)'),
+    ('studio_founder_role_en',  'Fondateur — Role (EN)'),
+    ('studio_founder_quote_fr', 'Fondateur — Citation (FR)'),
+    ('studio_founder_quote_en', 'Fondateur — Quote (EN)'),
+    # Méthode
+    ('studio_method_1_title_fr', 'Méthode — Étape 1 titre (FR)'),
+    ('studio_method_1_title_en', 'Méthode — Step 1 title (EN)'),
+    ('studio_method_1_text_fr',  'Méthode — Étape 1 texte (FR)'),
+    ('studio_method_1_text_en',  'Méthode — Step 1 text (EN)'),
+    ('studio_method_2_title_fr', 'Méthode — Étape 2 titre (FR)'),
+    ('studio_method_2_title_en', 'Méthode — Step 2 title (EN)'),
+    ('studio_method_2_text_fr',  'Méthode — Étape 2 texte (FR)'),
+    ('studio_method_2_text_en',  'Méthode — Step 2 text (EN)'),
+    ('studio_method_3_title_fr', 'Méthode — Étape 3 titre (FR)'),
+    ('studio_method_3_title_en', 'Méthode — Step 3 title (EN)'),
+    ('studio_method_3_text_fr',  'Méthode — Étape 3 texte (FR)'),
+    ('studio_method_3_text_en',  'Méthode — Step 3 text (EN)'),
+    # Services
+    ('studio_service_1_name_fr', 'Service 1 — Nom (FR)'),
+    ('studio_service_1_name_en', 'Service 1 — Name (EN)'),
+    ('studio_service_1_text_fr', 'Service 1 — Description (FR)'),
+    ('studio_service_1_text_en', 'Service 1 — Description (EN)'),
+    ('studio_service_2_name_fr', 'Service 2 — Nom (FR)'),
+    ('studio_service_2_name_en', 'Service 2 — Name (EN)'),
+    ('studio_service_2_text_fr', 'Service 2 — Description (FR)'),
+    ('studio_service_2_text_en', 'Service 2 — Description (EN)'),
+    ('studio_service_3_name_fr', 'Service 3 — Nom (FR)'),
+    ('studio_service_3_name_en', 'Service 3 — Name (EN)'),
+    ('studio_service_3_text_fr', 'Service 3 — Description (FR)'),
+    ('studio_service_3_text_en', 'Service 3 — Description (EN)'),
+]
+
+CONTACT_CONTENT_KEYS = [
+    ('contact_address',   'Adresse'),
+    ('contact_email',     'Email'),
+    ('contact_phone',     'Téléphone'),
+    ('contact_instagram', 'Lien Instagram'),
+    ('contact_facebook',  'Lien Facebook'),
+    ('contact_linkedin',  'Lien LinkedIn'),
+]
+
+
+@app.route('/admin/pages')
+@admin_required
+def admin_pages():
+    return redirect(url_for('admin_page_studio'))
+
+
+@app.route('/admin/pages/studio', methods=['GET', 'POST'])
+@admin_required
+def admin_page_studio():
+    if request.method == 'POST':
+        for key, _ in STUDIO_CONTENT_KEYS:
+            SiteContent.set(key, request.form.get(key, '').strip())
+        db.session.commit()
+        flash('Page Studio mise à jour !', 'success')
+        return redirect(url_for('admin_page_studio'))
+
+    content = {}
+    for key, label in STUDIO_CONTENT_KEYS:
+        content[key] = {'value': SiteContent.get(key), 'label': label}
+    return render_template('admin/page_content.html',
+                           page_name='Studio', page_slug='studio',
+                           content=content, keys=STUDIO_CONTENT_KEYS)
+
+
+@app.route('/admin/pages/contact', methods=['GET', 'POST'])
+@admin_required
+def admin_page_contact():
+    if request.method == 'POST':
+        for key, _ in CONTACT_CONTENT_KEYS:
+            SiteContent.set(key, request.form.get(key, '').strip())
+        db.session.commit()
+        flash('Page Contact mise à jour !', 'success')
+        return redirect(url_for('admin_page_contact'))
+
+    content = {}
+    for key, label in CONTACT_CONTENT_KEYS:
+        content[key] = {'value': SiteContent.get(key), 'label': label}
+    return render_template('admin/page_content.html',
+                           page_name='Contact', page_slug='contact',
+                           content=content, keys=CONTACT_CONTENT_KEYS)
 
 
 # ---------------------------------------------------------------------------
