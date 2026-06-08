@@ -249,10 +249,6 @@
       <div class="content-section">
         <h3>Presentation du Studio</h3>
         <div class="field-row">
-          {{ richtext('studio_intro_fr', 'Introduction', 'fr') }}
-          {{ richtext('studio_intro_en', 'Introduction', 'en') }}
-        </div>
-        <div class="field-row">
           {{ richtext('studio_detail_fr', 'Description detaillee', 'fr') }}
           {{ richtext('studio_detail_en', 'Detailed description', 'en') }}
         </div>
@@ -261,30 +257,6 @@
       <!-- Fondateur -->
       <div class="content-section">
         <h3>Fondateur — Youssou SOW</h3>
-        <div class="field-row">
-          <div class="field-group">
-            <label>Titre / Credentials <span class="lang-tag fr">FR</span></label>
-            <input type="text" name="studio_founder_title_fr"
-                   value="{{ content.studio_founder_title_fr.value }}">
-          </div>
-          <div class="field-group">
-            <label>Title / Credentials <span class="lang-tag en">EN</span></label>
-            <input type="text" name="studio_founder_title_en"
-                   value="{{ content.studio_founder_title_en.value }}">
-          </div>
-        </div>
-        <div class="field-row">
-          <div class="field-group">
-            <label>Role <span class="lang-tag fr">FR</span></label>
-            <input type="text" name="studio_founder_role_fr"
-                   value="{{ content.studio_founder_role_fr.value }}">
-          </div>
-          <div class="field-group">
-            <label>Role <span class="lang-tag en">EN</span></label>
-            <input type="text" name="studio_founder_role_en"
-                   value="{{ content.studio_founder_role_en.value }}">
-          </div>
-        </div>
         <div class="field-row">
           {{ richtext('studio_founder_quote_fr', 'Citation', 'fr', tall=true) }}
           {{ richtext('studio_founder_quote_en', 'Quote', 'en', tall=true) }}
