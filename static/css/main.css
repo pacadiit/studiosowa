@@ -1069,8 +1069,9 @@ main#home {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--black);
-  padding-top: 12px;
-  margin-bottom: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--black);
+  margin-bottom: 20px;
 }
 
 .agence-service p {
