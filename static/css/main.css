@@ -158,6 +158,10 @@ nav#nav {
   height: 50px;
   width: auto;
   display: block;
+  mix-blend-mode: difference;
+}
+body.page-light .nav-logo__img {
+  mix-blend-mode: normal;
 }
 
 .nav-links {
