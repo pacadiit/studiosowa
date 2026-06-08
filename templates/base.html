@@ -32,13 +32,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?v=20260608a">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?v=20260608b">
   <style>
     body { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; }
   </style>
   {% block extra_head %}{% endblock %}
 </head>
-<body data-lang="{{ lang }}">
+<body data-lang="{{ lang }}" class="{% block body_class %}{% endblock %}">
 
 <!-- Custom cursor -->
 <div id="cursor"></div>
@@ -53,6 +53,9 @@
   </div>
   <div class="loader-counter" id="loaderCounter">0%</div>
 </div>
+
+<!-- Dark gradient scrim behind navigation -->
+<div class="nav-scrim"></div>
 
 <!-- Navigation -->
 <nav id="nav" role="navigation">

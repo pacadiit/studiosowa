@@ -119,6 +119,24 @@ button { cursor: none; }
 /* ---------------------------------------------------------
    4. Navigation
    --------------------------------------------------------- */
+/* Gradient scrim behind nav — lives outside blend-mode context */
+.nav-scrim {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%);
+  pointer-events: none;
+  z-index: 499;
+}
+/* Hide scrim on light-background pages */
+body.page-light .nav-scrim { display: none; }
+/* On light pages, nav text must be dark */
+body.page-light nav#nav .nav-links a { color: var(--black); }
+body.page-light nav#nav .nav-links a::after { background: var(--black); }
+body.page-light .nav-logo__img { filter: none; }
+body.page-light .lang-switcher button { color: var(--black); }
+body.page-light .lang-switcher .sep { color: var(--gray-mid); }
+
 nav#nav {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -128,7 +146,6 @@ nav#nav {
   justify-content: space-between;
   padding: 0 32px 0 60px;
   z-index: 500;
-  mix-blend-mode: difference;
 }
 
 .nav-logo {
@@ -142,7 +159,7 @@ nav#nav {
   height: 50px;
   width: auto;
   display: block;
-  filter: invert(1);
+  filter: brightness(0) invert(1);
 }
 
 .nav-links {
