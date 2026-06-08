@@ -7,7 +7,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-  <style>body { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; }</style>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; }
+    .ql-editor { min-height: 140px; font-family: 'Inter', sans-serif; font-size: 13px; line-height: 1.7; }
+    .ql-toolbar.ql-snow { border-color: #e8e7e5; border-radius: 6px 6px 0 0; }
+    .ql-container.ql-snow { border-color: #e8e7e5; border-radius: 0 0 6px 6px; }
+  </style>
 </head>
 <body class="admin-body">
 
@@ -170,14 +176,14 @@
         <h2 class="admin-section-title">Description</h2>
         <div class="admin-form-grid">
           <div class="admin-form-group full-width">
-            <label class="admin-label" for="description_fr">Description (Français)</label>
-            <textarea class="admin-textarea" id="description_fr" name="description_fr"
-                      style="min-height: 160px;">{{ project.description_fr if project else '' }}</textarea>
+            <label class="admin-label">Description (Français)</label>
+            <div id="editor_description_fr">{{ project.description_fr|safe if project else '' }}</div>
+            <input type="hidden" name="description_fr" id="hidden_description_fr">
           </div>
           <div class="admin-form-group full-width">
-            <label class="admin-label" for="description_en">Description (English)</label>
-            <textarea class="admin-textarea" id="description_en" name="description_en"
-                      style="min-height: 160px;">{{ project.description_en if project else '' }}</textarea>
+            <label class="admin-label">Description (English)</label>
+            <div id="editor_description_en">{{ project.description_en|safe if project else '' }}</div>
+            <input type="hidden" name="description_en" id="hidden_description_en">
           </div>
         </div>
       </div>
@@ -312,6 +318,32 @@
   </main>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
 <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script>
+(function() {
+  var toolbarOptions = [
+    ['bold', 'italic', 'underline'],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    [{ 'align': [] }],
+    ['clean']
+  ];
+
+  var quillFr = new Quill('#editor_description_fr', {
+    theme: 'snow',
+    modules: { toolbar: toolbarOptions }
+  });
+
+  var quillEn = new Quill('#editor_description_en', {
+    theme: 'snow',
+    modules: { toolbar: toolbarOptions }
+  });
+
+  document.getElementById('projectForm').addEventListener('submit', function() {
+    document.getElementById('hidden_description_fr').value = quillFr.root.innerHTML;
+    document.getElementById('hidden_description_en').value = quillEn.root.innerHTML;
+  });
+})();
+</script>
 </body>
 </html>

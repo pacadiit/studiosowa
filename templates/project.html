@@ -253,8 +253,8 @@
     <!-- ── Colonne centre : description ──────────── -->
     <div class="proj-desc">
       {% if project.description_fr or project.description_en %}
-      <p class="lang-fr">{{ project.description_fr }}</p>
-      <p class="lang-en">{{ project.description_en }}</p>
+      <div class="lang-fr">{{ project.description_fr|safe }}</div>
+      <div class="lang-en">{{ project.description_en|safe }}</div>
       {% endif %}
     </div>
 
