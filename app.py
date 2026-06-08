@@ -140,6 +140,7 @@ class Project(db.Model):
 
     sort_order    = db.Column(db.Integer, default=0)
     published     = db.Column(db.Boolean, default=True)
+    show_on_home  = db.Column(db.Boolean, default=True)
     created_at    = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at    = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -359,7 +360,7 @@ def inject_lang():
 @app.route('/')
 def index():
     projects = (Project.query
-                .filter_by(published=True)
+                .filter_by(published=True, show_on_home=True)
                 .order_by(Project.sort_order, Project.created_at.desc())
                 .all())
     # Only projects with at least one image
@@ -514,6 +515,7 @@ def admin_new_project():
             image_size=request.form.get('image_size', 'large'),
             sort_order=int(request.form.get('sort_order', 0)),
             published='published' in request.form,
+            show_on_home='show_on_home' in request.form,
         )
         db.session.add(project)
         db.session.flush()  # get project.id
@@ -569,6 +571,7 @@ def admin_edit_project(project_id):
         project.image_size = request.form.get('image_size', 'large')
         project.sort_order = int(request.form.get('sort_order', 0))
         project.published = 'published' in request.form
+        project.show_on_home = 'show_on_home' in request.form
         project.updated_at = datetime.utcnow()
 
         # Handle new image uploads
@@ -765,12 +768,33 @@ def admin_pages():
     return redirect(url_for('admin_page_studio'))
 
 
+# Image keys for the studio page (stored in SiteContent as filenames)
+STUDIO_IMAGE_KEYS = [
+    ('studio_img_founder',  'Photo du fondateur',  'img/youssou-sow.jpg'),
+    ('studio_img_method',   'Photo Méthode',       'img/studio-method.jpg'),
+    ('studio_img_services', 'Photo Services',      'img/studio-services.jpg'),
+]
+
+
 @app.route('/admin/pages/studio', methods=['GET', 'POST'])
 @admin_required
 def admin_page_studio():
     if request.method == 'POST':
+        # Save text fields
         for key, _ in STUDIO_CONTENT_KEYS:
             SiteContent.set(key, request.form.get(key, '').strip())
+
+        # Save uploaded images
+        for img_key, _, _ in STUDIO_IMAGE_KEYS:
+            file = request.files.get(img_key)
+            if file and file.filename and allowed_file(file.filename):
+                # Delete old uploaded image if any (but not the default static ones)
+                old_val = SiteContent.get(img_key)
+                if old_val and not old_val.startswith('img/'):
+                    delete_image_file(old_val)
+                filename = save_image(file)
+                SiteContent.set(img_key, filename)
+
         db.session.commit()
         flash('Page Studio mise à jour !', 'success')
         return redirect(url_for('admin_page_studio'))
@@ -778,9 +802,45 @@ def admin_page_studio():
     content = {}
     for key, label in STUDIO_CONTENT_KEYS:
         content[key] = {'value': SiteContent.get(key), 'label': label}
+
+    # Build image data for template
+    studio_images = []
+    for img_key, img_label, img_default in STUDIO_IMAGE_KEYS:
+        current = SiteContent.get(img_key)
+        if current and not current.startswith('img/'):
+            # Uploaded image
+            img_url = image_url(current)
+        else:
+            # Default static image
+            img_url = url_for('static', filename=img_default)
+        studio_images.append({
+            'key': img_key,
+            'label': img_label,
+            'url': img_url,
+            'has_custom': bool(current and not current.startswith('img/')),
+        })
+
     return render_template('admin/page_content.html',
                            page_name='Studio', page_slug='studio',
-                           content=content, keys=STUDIO_CONTENT_KEYS)
+                           content=content, keys=STUDIO_CONTENT_KEYS,
+                           studio_images=studio_images)
+
+
+@app.route('/admin/pages/studio/reset-image/<key>', methods=['POST'])
+@admin_required
+def admin_reset_studio_image(key):
+    """Reset a studio image back to its default static file."""
+    valid_keys = [k for k, _, _ in STUDIO_IMAGE_KEYS]
+    if key not in valid_keys:
+        return jsonify({'error': 'Invalid key'}), 400
+    old_val = SiteContent.get(key)
+    if old_val and not old_val.startswith('img/'):
+        delete_image_file(old_val)
+    entry = SiteContent.query.filter_by(key=key).first()
+    if entry:
+        db.session.delete(entry)
+        db.session.commit()
+    return jsonify({'success': True})
 
 
 @app.route('/admin/pages/contact', methods=['GET', 'POST'])
@@ -900,6 +960,24 @@ def seed_demo_projects():
 
 _db_ready = False
 
+def _migrate_columns():
+    """Add missing columns to existing tables (SQLite has no ALTER ADD IF NOT EXISTS)."""
+    import sqlite3
+    db_path = app.config['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')
+    if not db_path or not os.path.exists(db_path):
+        return
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    # Check and add show_on_home to projects
+    cursor.execute("PRAGMA table_info(projects)")
+    cols = [row[1] for row in cursor.fetchall()]
+    if 'show_on_home' not in cols:
+        cursor.execute("ALTER TABLE projects ADD COLUMN show_on_home BOOLEAN DEFAULT 1")
+        print("[StudioSowa] Migration: added show_on_home column.")
+    conn.commit()
+    conn.close()
+
+
 @app.before_request
 def ensure_db():
     """
@@ -910,6 +988,7 @@ def ensure_db():
     if not _db_ready:
         try:
             db.create_all()
+            _migrate_columns()
             seed_demo_projects()
             _db_ready = True
             print("[StudioSowa] Base de données initialisée.")

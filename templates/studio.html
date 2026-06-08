@@ -65,9 +65,10 @@
     </div>
 
     <!-- Photo Youssou — s'étend sur les 2 sections -->
+    {% set founder_img = sc('studio_img_founder') %}
     <div class="agence-hero-photo">
       <div class="agence-photo">
-        <img src="{{ url_for('static', filename='img/youssou-sow.jpg') }}"
+        <img src="{{ image_url(founder_img) if founder_img else url_for('static', filename='img/youssou-sow.jpg') }}"
              alt="Youssou SOW"
              onerror="this.parentElement.classList.add('agence-photo--empty')">
       </div>
@@ -105,9 +106,10 @@
         <p class="lang-en">{{ sc('studio_method_3_text_en', 'We accompany our clients through to handover with rigour and transparency. Our method relies on constant dialogue with craftspeople to ensure execution faithful to our standards.') }}</p>
       </div>
     </div>
+    {% set method_img = sc('studio_img_method') %}
     <div class="agence-row__photo">
       <div class="agence-photo">
-        <img src="{{ url_for('static', filename='img/studio-method.jpg') }}"
+        <img src="{{ image_url(method_img) if method_img else url_for('static', filename='img/studio-method.jpg') }}"
              alt="Méthode StudioSowa"
              onerror="this.parentElement.classList.add('agence-photo--empty')">
       </div>
@@ -144,9 +146,10 @@
         <p class="lang-en">{{ sc('studio_service_3_text_en', 'We work on existing buildings with a sensitive approach, revealing their architectural potential while meeting contemporary requirements.') }}</p>
       </div>
     </div>
+    {% set services_img = sc('studio_img_services') %}
     <div class="agence-row__photo">
       <div class="agence-photo">
-        <img src="{{ url_for('static', filename='img/studio-services.jpg') }}"
+        <img src="{{ image_url(services_img) if services_img else url_for('static', filename='img/studio-services.jpg') }}"
              alt="Services StudioSowa"
              onerror="this.parentElement.classList.add('agence-photo--empty')">
       </div>

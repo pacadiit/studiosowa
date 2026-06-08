@@ -182,7 +182,7 @@
          class="{% if page_slug == 'contact' %}active{% endif %}">Contact</a>
     </div>
 
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
 
     {% if page_slug == 'studio' %}
 
@@ -278,6 +278,42 @@
         </div>
         {% endfor %}
       </div>
+
+      <!-- Images de la page -->
+      {% if studio_images %}
+      <div class="content-section">
+        <h3>Images de la page</h3>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+          {% for img in studio_images %}
+          <div class="field-group">
+            <label>{{ img.label }}</label>
+            <div style="position: relative; margin-bottom: 8px; background: #f5f5f4; border: 1px solid #e8e7e5; overflow: hidden;">
+              <img src="{{ img.url }}" alt="{{ img.label }}"
+                   style="width: 100%; height: 200px; object-fit: cover; display: block;"
+                   id="preview_{{ img.key }}">
+              {% if img.has_custom %}
+              <button type="button" onclick="resetImage('{{ img.key }}')"
+                      style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.6); color:#fff; border:none; padding:4px 8px; font-size:11px; cursor:pointer; letter-spacing:0.05em;">
+                Restaurer l'image par defaut
+              </button>
+              {% endif %}
+            </div>
+            <label style="display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border:1px dashed #ccc; cursor:pointer; font-size:12px; color:#888; transition: border 0.2s;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              Changer l'image
+              <input type="file" name="{{ img.key }}" accept="image/*"
+                     style="display:none;"
+                     onchange="previewFile(this, 'preview_{{ img.key }}')">
+            </label>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
 
       <!-- Services -->
       <div class="content-section">
@@ -378,5 +414,25 @@
   </main>
 </div>
 
+<script>
+function previewFile(input, previewId) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById(previewId).src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function resetImage(key) {
+  if (!confirm('Restaurer l\'image par defaut ?')) return;
+  fetch('/admin/pages/studio/reset-image/' + key, { method: 'POST' })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.success) location.reload();
+    });
+}
+</script>
 </body>
 </html>

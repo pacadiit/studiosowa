@@ -210,6 +210,12 @@
                      style="width: 16px; height: 16px;">
               <span style="font-size: 13px; font-weight: 300;">Publié (visible sur le site)</span>
             </label>
+            <label style="display: flex; align-items: center; gap: 10px; margin-top: 10px; cursor: pointer;">
+              <input type="checkbox" name="show_on_home"
+                     {{ 'checked' if not project or project.show_on_home else '' }}
+                     style="width: 16px; height: 16px;">
+              <span style="font-size: 13px; font-weight: 300;">Afficher sur la page d'accueil</span>
+            </label>
           </div>
 
         </div>

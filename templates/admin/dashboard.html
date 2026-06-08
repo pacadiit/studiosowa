@@ -141,6 +141,9 @@
             <span class="badge {% if project.published %}badge-published{% else %}badge-draft{% endif %}">
               {{ 'Publié' if project.published else 'Brouillon' }}
             </span>
+            {% if project.show_on_home %}
+            <span class="badge" style="background:#e8f0fe; color:#1a56db; margin-left:4px;">Accueil</span>
+            {% endif %}
           </td>
           <td>
             <div style="display:flex; gap:8px; align-items:center;">
