@@ -133,7 +133,6 @@ body.page-light .nav-scrim { display: none; }
 /* On light pages, nav text must be dark */
 body.page-light nav#nav .nav-links a { color: var(--black); }
 body.page-light nav#nav .nav-links a::after { background: var(--black); }
-body.page-light .nav-logo__img { filter: none; }
 body.page-light .lang-switcher button { color: var(--black); }
 body.page-light .lang-switcher .sep { color: var(--gray-mid); }
 
@@ -159,7 +158,6 @@ nav#nav {
   height: 50px;
   width: auto;
   display: block;
-  filter: brightness(0) invert(1);
 }
 
 .nav-links {
