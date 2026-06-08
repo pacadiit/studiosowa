@@ -1028,7 +1028,6 @@ main#home {
   text-align: justify;
   line-height: 1.9;
   color: var(--gray-dark);
-  font-style: italic;
 }
 .agence-quote p + p {
   margin-top: 20px;
