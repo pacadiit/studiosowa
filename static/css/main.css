@@ -149,6 +149,9 @@ nav#nav {
 }
 body.page-light nav#nav {
   mix-blend-mode: normal;
+  background: rgba(248, 247, 245, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .nav-logo {
