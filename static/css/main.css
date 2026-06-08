@@ -145,6 +145,10 @@ nav#nav {
   justify-content: space-between;
   padding: 0 32px 0 60px;
   z-index: 500;
+  mix-blend-mode: screen;
+}
+body.page-light nav#nav {
+  mix-blend-mode: normal;
 }
 
 .nav-logo {
@@ -158,10 +162,10 @@ nav#nav {
   height: 50px;
   width: auto;
   display: block;
-  mix-blend-mode: difference;
+  filter: invert(1);
 }
 body.page-light .nav-logo__img {
-  mix-blend-mode: normal;
+  filter: none;
 }
 
 .nav-links {
