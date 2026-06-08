@@ -1,16 +1,25 @@
 {% extends "base.html" %}
 {% block title %}Studio — StudioSowa{% endblock %}
 
+{# ── Macro: render a rich text field (HTML from Quill) or plain default ── #}
+{% macro rt(key, default, lang_class='') %}
+  {% set val = sc(key) %}
+  {% if val %}
+    <div class="{{ lang_class }}">{{ val|safe }}</div>
+  {% else %}
+    <p class="{{ lang_class }}">{{ default }}</p>
+  {% endif %}
+{% endmacro %}
+
 {% block content %}
 <main class="agence-page" role="main">
 
   <!-- ══════════════════════════════════════════════════
        BLOC 1+2 — Photo Youssou SOW span sur 2 sections
-       Grid : [col1 col2] span 2 rows | [photo] span 2 rows
   ══════════════════════════════════════════════════ -->
   <div class="agence-hero-block">
 
-    <!-- Section 1 — Studio (col 1 & 2, row 1) -->
+    <!-- Section 1 — Studio -->
     <div class="agence-row__title">
       <h1 class="agence-bigtitle reveal">
         <span class="lang-fr">Studio</span>
@@ -19,16 +28,16 @@
     </div>
     <div class="agence-row__text agence-row__text--top">
       <div class="agence-body reveal">
-        <p class="lang-fr">{{ sc('studio_intro_fr', "STUDIOSOWA est une agence d'architecture fondée par Youssou SOW, architecte et urbaniste.") }}</p>
-        <p class="lang-en">{{ sc('studio_intro_en', 'STUDIOSOWA is an architecture studio founded by Youssou SOW, architect and urban designer.') }}</p>
+        {{ rt('studio_intro_fr', "STUDIOSOWA est une agence d'architecture fondée par Youssou SOW, architecte et urbaniste.", 'lang-fr') }}
+        {{ rt('studio_intro_en', 'STUDIOSOWA is an architecture studio founded by Youssou SOW, architect and urban designer.', 'lang-en') }}
       </div>
       <div class="agence-body reveal">
-        <p class="lang-fr">{{ sc('studio_detail_fr', "Nous sommes spécialisés dans la conception d'espaces qui s'ancrent dans leur contexte géographique, climatique et culturel. Notre objectif est de produire une architecture de qualité, sobre dans ses moyens, généreuse dans ses usages — une architecture qui dure.") }}</p>
-        <p class="lang-en">{{ sc('studio_detail_en', 'We specialise in designing spaces rooted in their geographic, climatic and cultural context. Our goal is to produce quality architecture — measured in its means, generous in its uses — architecture that endures.') }}</p>
+        {{ rt('studio_detail_fr', "Nous sommes spécialisés dans la conception d'espaces qui s'ancrent dans leur contexte géographique, climatique et culturel. Notre objectif est de produire une architecture de qualité, sobre dans ses moyens, généreuse dans ses usages — une architecture qui dure.", 'lang-fr') }}
+        {{ rt('studio_detail_en', "We specialise in designing spaces rooted in their geographic, climatic and cultural context. Our goal is to produce quality architecture — measured in its means, generous in its uses — architecture that endures.", 'lang-en') }}
       </div>
     </div>
 
-    <!-- Section 2 — Fondateur (col 1 & 2, row 2) -->
+    <!-- Section 2 — Fondateur -->
     <div class="agence-row__title">
       <h2 class="agence-bigtitle reveal">Youssou<br>SOW</h2>
     </div>
@@ -44,9 +53,7 @@
       <div class="agence-quote reveal">
         {% set quote_fr = sc('studio_founder_quote_fr') %}
         {% if quote_fr %}
-          {% for para in quote_fr.split('\n') %}
-            {% if para.strip() %}<p class="lang-fr">{{ para.strip() }}</p>{% endif %}
-          {% endfor %}
+          <div class="lang-fr">{{ quote_fr|safe }}</div>
         {% else %}
           <p class="lang-fr">"Originaire du Sénégal, j'ai entrepris des études d'architecture animé par une conviction profonde : l'espace construit façonne les modes de vie et les relations humaines.</p>
           <p class="lang-fr">Ma passion pour l'architecture est indissociable de mon attachement au contexte, à la lumière et aux matériaux. Chaque projet est pour moi une opportunité de dialoguer avec un lieu, d'en révéler le potentiel et d'y inscrire une architecture qui serve vraiment ses habitants.</p>
@@ -54,9 +61,7 @@
         {% endif %}
         {% set quote_en = sc('studio_founder_quote_en') %}
         {% if quote_en %}
-          {% for para in quote_en.split('\n') %}
-            {% if para.strip() %}<p class="lang-en">{{ para.strip() }}</p>{% endif %}
-          {% endfor %}
+          <div class="lang-en">{{ quote_en|safe }}</div>
         {% else %}
           <p class="lang-en">"My passion for architecture is inseparable from my attachment to context, light and materials. Every project is an opportunity to dialogue with a place, reveal its potential, and create architecture that truly serves its inhabitants.</p>
           <p class="lang-en">I founded StudioSowa with the ambition to design spaces that don't merely look beautiful, but that are lived in, inhabited, loved — architecture rooted in its time and its territory."</p>
@@ -64,7 +69,7 @@
       </div>
     </div>
 
-    <!-- Photo Youssou — s'étend sur les 2 sections -->
+    <!-- Photo Youssou -->
     {% set founder_img = sc('studio_img_founder') %}
     <div class="agence-hero-photo">
       <div class="agence-photo">
@@ -87,24 +92,26 @@
       </h2>
     </div>
     <div class="agence-row__text">
+      {% for i in [1, 2, 3] %}
+      {% set default_titles_fr = ['01 / Comprendre', '02 / Concevoir', '03 / Réaliser'] %}
+      {% set default_titles_en = ['01 / Understand', '02 / Design', '03 / Build'] %}
+      {% set default_texts_fr = [
+        "Chaque collaboration commence par une écoute approfondie — des usagers, du lieu, du programme. Nous définissons précisément les intentions spatiales, les enjeux architecturaux et les désirs du maître d'ouvrage. S'imprégner de ces informations est une étape indispensable pour concevoir juste.",
+        "De l'esquisse à l'avant-projet, nous développons des propositions architecturales ancrées dans le site et répondant aux besoins réels. Chaque espace est pensé pour sa qualité de vie, sa luminosité et son insertion dans le paysage.",
+        "Nous accompagnons nos clients jusqu'à la livraison, avec rigueur et transparence. Notre méthode repose sur un dialogue constant avec les artisans pour garantir une exécution fidèle à nos exigences."
+      ] %}
+      {% set default_texts_en = [
+        "Every collaboration begins with deep listening — to users, to place, to programme. We define precisely the spatial intentions, architectural challenges and client aspirations. Absorbing this information is an essential step toward thoughtful design.",
+        "From sketch to schematic design, we develop architectural proposals rooted in the site and responding to real needs. Every space is considered for its quality of life, light and landscape integration.",
+        "We accompany our clients through to handover with rigour and transparency. Our method relies on constant dialogue with craftspeople to ensure execution faithful to our standards."
+      ] %}
       <div class="agence-step reveal">
-        <h3 class="agence-step__num lang-fr">{{ sc('studio_method_1_title_fr', '01 / Comprendre') }}</h3>
-        <h3 class="agence-step__num lang-en">{{ sc('studio_method_1_title_en', '01 / Understand') }}</h3>
-        <p class="lang-fr">{{ sc('studio_method_1_text_fr', "Chaque collaboration commence par une écoute approfondie — des usagers, du lieu, du programme. Nous définissons précisément les intentions spatiales, les enjeux architecturaux et les désirs du maître d'ouvrage. S'imprégner de ces informations est une étape indispensable pour concevoir juste.") }}</p>
-        <p class="lang-en">{{ sc('studio_method_1_text_en', 'Every collaboration begins with deep listening — to users, to place, to programme. We define precisely the spatial intentions, architectural challenges and client aspirations. Absorbing this information is an essential step toward thoughtful design.') }}</p>
+        <h3 class="agence-step__num lang-fr">{{ sc('studio_method_' ~ i ~ '_title_fr', default_titles_fr[i-1]) }}</h3>
+        <h3 class="agence-step__num lang-en">{{ sc('studio_method_' ~ i ~ '_title_en', default_titles_en[i-1]) }}</h3>
+        {{ rt('studio_method_' ~ i ~ '_text_fr', default_texts_fr[i-1], 'lang-fr') }}
+        {{ rt('studio_method_' ~ i ~ '_text_en', default_texts_en[i-1], 'lang-en') }}
       </div>
-      <div class="agence-step reveal">
-        <h3 class="agence-step__num lang-fr">{{ sc('studio_method_2_title_fr', '02 / Concevoir') }}</h3>
-        <h3 class="agence-step__num lang-en">{{ sc('studio_method_2_title_en', '02 / Design') }}</h3>
-        <p class="lang-fr">{{ sc('studio_method_2_text_fr', "De l'esquisse à l'avant-projet, nous développons des propositions architecturales ancrées dans le site et répondant aux besoins réels. Chaque espace est pensé pour sa qualité de vie, sa luminosité et son insertion dans le paysage.") }}</p>
-        <p class="lang-en">{{ sc('studio_method_2_text_en', 'From sketch to schematic design, we develop architectural proposals rooted in the site and responding to real needs. Every space is considered for its quality of life, light and landscape integration.') }}</p>
-      </div>
-      <div class="agence-step reveal">
-        <h3 class="agence-step__num lang-fr">{{ sc('studio_method_3_title_fr', '03 / Réaliser') }}</h3>
-        <h3 class="agence-step__num lang-en">{{ sc('studio_method_3_title_en', '03 / Build') }}</h3>
-        <p class="lang-fr">{{ sc('studio_method_3_text_fr', "Nous accompagnons nos clients jusqu'à la livraison, avec rigueur et transparence. Notre méthode repose sur un dialogue constant avec les artisans pour garantir une exécution fidèle à nos exigences.") }}</p>
-        <p class="lang-en">{{ sc('studio_method_3_text_en', 'We accompany our clients through to handover with rigour and transparency. Our method relies on constant dialogue with craftspeople to ensure execution faithful to our standards.') }}</p>
-      </div>
+      {% endfor %}
     </div>
     {% set method_img = sc('studio_img_method') %}
     <div class="agence-row__photo">
@@ -127,24 +134,26 @@
       </h2>
     </div>
     <div class="agence-row__text">
+      {% set svc_names_fr = ['Conception architecturale', "Maîtrise d'œuvre", 'Réhabilitation &amp; Patrimoine'] %}
+      {% set svc_names_en = ['Architectural design', 'Project management', 'Renovation &amp; Heritage'] %}
+      {% set svc_texts_fr = [
+        "De la villa privée au grand équipement public, nous concevons des projets ancrés dans leur contexte, alliant esthétique intemporelle et performance.",
+        "Nous assurons le suivi complet de chantier, de la consultation des entreprises à la livraison, garantissant le respect du projet, des délais et du budget.",
+        "Nous intervenons sur des bâtiments existants avec une approche sensible, visant à révéler le potentiel architectural tout en répondant aux exigences contemporaines."
+      ] %}
+      {% set svc_texts_en = [
+        "From the private villa to major public facilities, we design projects rooted in context, balancing timeless aesthetics and performance.",
+        "We oversee the full construction process, from contractor selection to handover, ensuring respect for the design, schedule and budget.",
+        "We work on existing buildings with a sensitive approach, revealing their architectural potential while meeting contemporary requirements."
+      ] %}
+      {% for i in [1, 2, 3] %}
       <div class="agence-service reveal">
-        <h3 class="agence-service__name lang-fr">{{ sc('studio_service_1_name_fr', 'Conception architecturale') }}</h3>
-        <h3 class="agence-service__name lang-en">{{ sc('studio_service_1_name_en', 'Architectural design') }}</h3>
-        <p class="lang-fr">{{ sc('studio_service_1_text_fr', "De la villa privée au grand équipement public, nous concevons des projets ancrés dans leur contexte, alliant esthétique intemporelle et performance.") }}</p>
-        <p class="lang-en">{{ sc('studio_service_1_text_en', 'From the private villa to major public facilities, we design projects rooted in context, balancing timeless aesthetics and performance.') }}</p>
+        <h3 class="agence-service__name lang-fr">{{ sc('studio_service_' ~ i ~ '_name_fr', svc_names_fr[i-1]) }}</h3>
+        <h3 class="agence-service__name lang-en">{{ sc('studio_service_' ~ i ~ '_name_en', svc_names_en[i-1]) }}</h3>
+        {{ rt('studio_service_' ~ i ~ '_text_fr', svc_texts_fr[i-1], 'lang-fr') }}
+        {{ rt('studio_service_' ~ i ~ '_text_en', svc_texts_en[i-1], 'lang-en') }}
       </div>
-      <div class="agence-service reveal">
-        <h3 class="agence-service__name lang-fr">{{ sc('studio_service_2_name_fr', "Maîtrise d'œuvre") }}</h3>
-        <h3 class="agence-service__name lang-en">{{ sc('studio_service_2_name_en', 'Project management') }}</h3>
-        <p class="lang-fr">{{ sc('studio_service_2_text_fr', "Nous assurons le suivi complet de chantier, de la consultation des entreprises à la livraison, garantissant le respect du projet, des délais et du budget.") }}</p>
-        <p class="lang-en">{{ sc('studio_service_2_text_en', 'We oversee the full construction process, from contractor selection to handover, ensuring respect for the design, schedule and budget.') }}</p>
-      </div>
-      <div class="agence-service reveal">
-        <h3 class="agence-service__name lang-fr">{{ sc('studio_service_3_name_fr', 'Réhabilitation &amp; Patrimoine') }}</h3>
-        <h3 class="agence-service__name lang-en">{{ sc('studio_service_3_name_en', 'Renovation &amp; Heritage') }}</h3>
-        <p class="lang-fr">{{ sc('studio_service_3_text_fr', "Nous intervenons sur des bâtiments existants avec une approche sensible, visant à révéler le potentiel architectural tout en répondant aux exigences contemporaines.") }}</p>
-        <p class="lang-en">{{ sc('studio_service_3_text_en', 'We work on existing buildings with a sensitive approach, revealing their architectural potential while meeting contemporary requirements.') }}</p>
-      </div>
+      {% endfor %}
     </div>
     {% set services_img = sc('studio_img_services') %}
     <div class="agence-row__photo">
@@ -157,7 +166,7 @@
   </section>
 
   <!-- ══════════════════════════════════════════════════
-       CONTACT
+       CONTACT FOOTER
   ══════════════════════════════════════════════════ -->
   {% set c_email = sc('contact_email', 'contact@studiosowa.com') %}
   {% set c_address_fr = sc('contact_address', 'Dakar, Sénégal') %}

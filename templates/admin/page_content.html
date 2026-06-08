@@ -7,6 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+  <!-- Quill.js -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet">
+
   <style>
     body { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; }
 
@@ -34,7 +38,7 @@
     }
     .field-row.full { grid-template-columns: 1fr; }
     .field-group { display: flex; flex-direction: column; }
-    .field-group label {
+    .field-group > label:first-child {
       font-size: 11px;
       letter-spacing: 0.08em;
       color: #888;
@@ -51,7 +55,10 @@
     }
     .lang-tag.fr { background: #e8f0fe; color: #1a56db; }
     .lang-tag.en { background: #fef3c7; color: #92400e; }
-    .field-group input,
+
+    .field-group input[type="text"],
+    .field-group input[type="email"],
+    .field-group input[type="url"],
     .field-group textarea {
       font-family: 'Inter', sans-serif;
       font-size: 13px;
@@ -109,6 +116,47 @@
     .page-tabs a.active {
       color: #0a0a0a;
       border-bottom-color: #0a0a0a;
+    }
+
+    /* ── Quill overrides ── */
+    .quill-wrap {
+      border: 1px solid #ddd;
+      background: #fafaf9;
+      transition: border 0.2s;
+    }
+    .quill-wrap:focus-within {
+      border-color: #0a0a0a;
+      background: #fff;
+    }
+    .quill-wrap .ql-toolbar {
+      border: none;
+      border-bottom: 1px solid #e8e7e5;
+      padding: 6px 8px;
+      background: #f5f5f4;
+    }
+    .quill-wrap .ql-toolbar .ql-formats { margin-right: 10px; }
+    .quill-wrap .ql-toolbar button {
+      width: 26px;
+      height: 26px;
+    }
+    .quill-wrap .ql-container {
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: #222;
+    }
+    .quill-wrap .ql-editor {
+      min-height: 90px;
+      padding: 10px 12px;
+      line-height: 1.65;
+    }
+    .quill-wrap .ql-editor p { margin-bottom: 0.5em; }
+    .quill-wrap.tall .ql-editor { min-height: 150px; }
+
+    .quill-wrap .ql-editor.ql-blank::before {
+      color: #bbb;
+      font-style: normal;
+      font-size: 13px;
     }
   </style>
 </head>
@@ -182,32 +230,31 @@
          class="{% if page_slug == 'contact' %}active{% endif %}">Contact</a>
     </div>
 
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data" id="pageForm">
 
     {% if page_slug == 'studio' %}
+
+      {# ── Macro for a rich text field ── #}
+      {% macro richtext(name, label, lang, tall=false) %}
+      <div class="field-group">
+        <label>{{ label }} <span class="lang-tag {{ lang }}">{{ lang|upper }}</span></label>
+        <div class="quill-wrap {{ 'tall' if tall }}" id="qw_{{ name }}">
+          <div id="editor_{{ name }}">{{ content[name].value|safe }}</div>
+        </div>
+        <input type="hidden" name="{{ name }}" id="hidden_{{ name }}">
+      </div>
+      {% endmacro %}
 
       <!-- Studio intro -->
       <div class="content-section">
         <h3>Presentation du Studio</h3>
         <div class="field-row">
-          <div class="field-group">
-            <label>Introduction <span class="lang-tag fr">FR</span></label>
-            <textarea name="studio_intro_fr" class="short">{{ content.studio_intro_fr.value }}</textarea>
-          </div>
-          <div class="field-group">
-            <label>Introduction <span class="lang-tag en">EN</span></label>
-            <textarea name="studio_intro_en" class="short">{{ content.studio_intro_en.value }}</textarea>
-          </div>
+          {{ richtext('studio_intro_fr', 'Introduction', 'fr') }}
+          {{ richtext('studio_intro_en', 'Introduction', 'en') }}
         </div>
         <div class="field-row">
-          <div class="field-group">
-            <label>Description detaillee <span class="lang-tag fr">FR</span></label>
-            <textarea name="studio_detail_fr">{{ content.studio_detail_fr.value }}</textarea>
-          </div>
-          <div class="field-group">
-            <label>Description detaillee <span class="lang-tag en">EN</span></label>
-            <textarea name="studio_detail_en">{{ content.studio_detail_en.value }}</textarea>
-          </div>
+          {{ richtext('studio_detail_fr', 'Description detaillee', 'fr') }}
+          {{ richtext('studio_detail_en', 'Detailed description', 'en') }}
         </div>
       </div>
 
@@ -221,7 +268,7 @@
                    value="{{ content.studio_founder_title_fr.value }}">
           </div>
           <div class="field-group">
-            <label>Titre / Credentials <span class="lang-tag en">EN</span></label>
+            <label>Title / Credentials <span class="lang-tag en">EN</span></label>
             <input type="text" name="studio_founder_title_en"
                    value="{{ content.studio_founder_title_en.value }}">
           </div>
@@ -239,14 +286,8 @@
           </div>
         </div>
         <div class="field-row">
-          <div class="field-group">
-            <label>Citation <span class="lang-tag fr">FR</span></label>
-            <textarea name="studio_founder_quote_fr" style="min-height:150px;">{{ content.studio_founder_quote_fr.value }}</textarea>
-          </div>
-          <div class="field-group">
-            <label>Quote <span class="lang-tag en">EN</span></label>
-            <textarea name="studio_founder_quote_en" style="min-height:150px;">{{ content.studio_founder_quote_en.value }}</textarea>
-          </div>
+          {{ richtext('studio_founder_quote_fr', 'Citation', 'fr', tall=true) }}
+          {{ richtext('studio_founder_quote_en', 'Quote', 'en', tall=true) }}
         </div>
       </div>
 
@@ -267,14 +308,8 @@
           </div>
         </div>
         <div class="field-row">
-          <div class="field-group">
-            <label>Etape {{ i }} — Texte <span class="lang-tag fr">FR</span></label>
-            <textarea name="studio_method_{{ i }}_text_fr">{{ content['studio_method_' ~ i ~ '_text_fr'].value }}</textarea>
-          </div>
-          <div class="field-group">
-            <label>Step {{ i }} — Text <span class="lang-tag en">EN</span></label>
-            <textarea name="studio_method_{{ i }}_text_en">{{ content['studio_method_' ~ i ~ '_text_en'].value }}</textarea>
-          </div>
+          {{ richtext('studio_method_' ~ i ~ '_text_fr', 'Etape ' ~ i ~ ' — Texte', 'fr') }}
+          {{ richtext('studio_method_' ~ i ~ '_text_en', 'Step ' ~ i ~ ' — Text', 'en') }}
         </div>
         {% endfor %}
       </div>
@@ -332,14 +367,8 @@
           </div>
         </div>
         <div class="field-row">
-          <div class="field-group">
-            <label>Service {{ i }} — Description <span class="lang-tag fr">FR</span></label>
-            <textarea name="studio_service_{{ i }}_text_fr">{{ content['studio_service_' ~ i ~ '_text_fr'].value }}</textarea>
-          </div>
-          <div class="field-group">
-            <label>Service {{ i }} — Description <span class="lang-tag en">EN</span></label>
-            <textarea name="studio_service_{{ i }}_text_en">{{ content['studio_service_' ~ i ~ '_text_en'].value }}</textarea>
-          </div>
+          {{ richtext('studio_service_' ~ i ~ '_text_fr', 'Service ' ~ i ~ ' — Description', 'fr') }}
+          {{ richtext('studio_service_' ~ i ~ '_text_en', 'Service ' ~ i ~ ' — Description', 'en') }}
         </div>
         {% endfor %}
       </div>
@@ -414,7 +443,47 @@
   </main>
 </div>
 
+<!-- Quill.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
+
 <script>
+/* ── Initialize all Quill editors ── */
+var editors = {};
+
+document.querySelectorAll('[id^="editor_"]').forEach(function(el) {
+  var name = el.id.replace('editor_', '');
+
+  var quill = new Quill('#' + el.id, {
+    theme: 'snow',
+    modules: {
+      toolbar: [
+        ['bold', 'italic', 'underline'],
+        ['link'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        ['blockquote'],
+        ['clean']
+      ]
+    },
+    placeholder: 'Saisir le contenu ici...'
+  });
+
+  editors[name] = quill;
+});
+
+/* ── Sync Quill content to hidden inputs on submit ── */
+document.getElementById('pageForm').addEventListener('submit', function() {
+  Object.keys(editors).forEach(function(name) {
+    var quill = editors[name];
+    var hidden = document.getElementById('hidden_' + name);
+    if (hidden) {
+      // If editor is empty, send empty string
+      var html = quill.root.innerHTML;
+      hidden.value = (html === '<p><br></p>' || html === '<p></p>') ? '' : html;
+    }
+  });
+});
+
+/* ── Image preview / reset ── */
 function previewFile(input, previewId) {
   var file = input.files[0];
   if (!file) return;
